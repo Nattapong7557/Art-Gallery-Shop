@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery — ร้านขายรูปภาพศิลปะออนไลน์</title>
+    <meta name="description" content="แพลตฟอร์มซื้อขายผลงานศิลปะออนไลน์ ภาพวาดต้นฉบับ งานพิมพ์คุณภาพสูง จากศิลปินทั่วประเทศ">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg-dark: #06080f;
+    --bg-card: #0d1117;
+    --bg-glass: rgba(13, 17, 23, 0.6);
+    --border: rgba(255,255,255,0.06);
+    --text: #f0f4f8;
+    --text-dim: #8b95a5;
+    --accent: #a78bfa;
+    --accent2: #38bdf8;
+    --gold: #f59e0b;
+    --gradient: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%);
+    --gradient-gold: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ===== NAVBAR ===== */
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 1rem 2rem;
+    background: rgba(6, 8, 15, 0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all 0.3s ease;
+}
+nav.scrolled { padding: 0.6rem 2rem; background: rgba(6, 8, 15, 0.95); }
+.nav-logo {
+    font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800;
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    text-decoration: none;
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+    color: var(--text-dim); text-decoration: none; font-weight: 500; font-size: 0.95rem;
+    transition: color 0.3s; position: relative;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+    background: var(--gradient); transition: width 0.3s;
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+    padding: 0.6rem 1.5rem; border-radius: 50px; border: none; cursor: pointer;
+    background: var(--gradient); color: #fff; font-weight: 600; font-size: 0.9rem;
+    transition: transform 0.3s, box-shadow 0.3s; text-decoration: none;
+}
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(167,139,250,0.3); }
+
+/* ===== HERO ===== */
+.hero {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden;
+}
+.hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(167,139,250,0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(56,189,248,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 80%, rgba(52,211,153,0.06) 0%, transparent 50%);
+}
+.hero-content { position: relative; max-width: 800px; }
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 500;
+    background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2); color: var(--accent);
+    margin-bottom: 2rem;
+    animation: fadeInUp 0.8s ease;
+}
+.hero h1 {
+    font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
+    line-height: 1.1; margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease 0.15s both;
+}
+.hero h1 .gradient-text {
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero p {
+    font-size: 1.15rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 2.5rem;
+    animation: fadeInUp 0.8s ease 0.3s both;
+}
+.hero-buttons {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease 0.45s both;
+}
+.btn-primary {
+    padding: 0.9rem 2.2rem; border-radius: 50px; border: none; cursor: pointer;
+    background: var(--gradient); color: #fff; font-weight: 700; font-size: 1rem;
+    transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(167,139,250,0.35); }
+.btn-outline {
+    padding: 0.9rem 2.2rem; border-radius: 50px; cursor: pointer;
+    background: transparent; border: 1.5px solid rgba(255,255,255,0.15); color: var(--text);
+    font-weight: 600; font-size: 1rem; transition: all 0.3s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+
+.hero-stats {
+    display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
+    animation: fadeInUp 0.8s ease 0.6s both;
+}
+.stat { text-align: center; }
+.stat-number {
+    font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800;
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.25rem; }
+
+/* ===== SECTIONS ===== */
+section { padding: 6rem 2rem; }
+.section-header { text-align: center; max-width: 650px; margin: 0 auto 4rem; }
+.section-tag {
+    display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    background: rgba(167,139,250,0.1); color: var(--accent); margin-bottom: 1rem;
+}
+.section-header h2 {
+    font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;
+}
+.section-header p { color: var(--text-dim); font-size: 1.05rem; }
+
+/* ===== GALLERY ===== */
+.gallery-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+}
+.gallery-card {
+    border-radius: 16px; overflow: hidden; background: var(--bg-card);
+    border: 1px solid var(--border); transition: all 0.4s ease; position: relative; cursor: pointer;
+}
+.gallery-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); border-color: rgba(167,139,250,0.3); }
+.gallery-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.5s; }
+.gallery-card:hover img { transform: scale(1.05); }
+.gallery-card-overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.4s; display: flex; align-items: flex-end; padding: 1.5rem;
+}
+.gallery-card:hover .gallery-card-overlay { opacity: 1; }
+.gallery-card-info { color: #fff; }
+.gallery-card-info h3 { font-family: 'Outfit', sans-serif; font-size: 1.1rem; margin-bottom: 0.25rem; }
+.gallery-card-info p { font-size: 0.85rem; opacity: 0.8; }
+.gallery-card-price {
+    position: absolute; top: 1rem; right: 1rem; padding: 0.4rem 0.9rem; border-radius: 50px;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: var(--gold);
+    font-weight: 700; font-size: 0.85rem;
+}
+.gallery-card-badge {
+    position: absolute; top: 1rem; left: 1rem; padding: 0.3rem 0.8rem; border-radius: 50px;
+    background: var(--gradient); color: #fff; font-weight: 600; font-size: 0.75rem;
+}
+
+/* ===== FEATURES ===== */
+.features-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
+}
+.feature-card {
+    padding: 2rem; border-radius: 16px; background: var(--bg-card);
+    border: 1px solid var(--border); transition: all 0.3s;
+}
+.feature-card:hover { border-color: rgba(167,139,250,0.3); transform: translateY(-4px); }
+.feature-icon {
+    width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: 1.2rem;
+}
+.feature-icon.purple { background: rgba(167,139,250,0.15); color: var(--accent); }
+.feature-icon.blue { background: rgba(56,189,248,0.15); color: var(--accent2); }
+.feature-icon.gold { background: rgba(245,158,11,0.15); color: var(--gold); }
+.feature-icon.green { background: rgba(52,211,153,0.15); color: #34d399; }
+.feature-icon.pink { background: rgba(236,72,153,0.15); color: #ec4899; }
+.feature-icon.red { background: rgba(239,68,68,0.15); color: #ef4444; }
+.feature-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 0.6rem; }
+.feature-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+
+/* ===== PRICING ===== */
+#pricing { background: linear-gradient(180deg, var(--bg-dark) 0%, #0a0f1a 100%); }
+.pricing-grid {
+    max-width: 1000px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+}
+.pricing-card {
+    padding: 2.5rem 2rem; border-radius: 20px; background: var(--bg-card);
+    border: 1px solid var(--border); text-align: center; transition: all 0.3s; position: relative;
+}
+.pricing-card.featured {
+    border-color: rgba(167,139,250,0.4);
+    background: linear-gradient(180deg, rgba(167,139,250,0.06) 0%, var(--bg-card) 40%);
+}
+.pricing-card.featured::before {
+    content: 'แนะนำ'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    padding: 0.3rem 1.2rem; border-radius: 50px; background: var(--gradient);
+    color: #fff; font-weight: 700; font-size: 0.8rem;
+}
+.pricing-card:hover { transform: translateY(-6px); }
+.pricing-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
+.pricing-card .price {
+    font-family: 'Outfit', sans-serif; font-size: 2.8rem; font-weight: 800; margin: 1rem 0;
+}
+.pricing-card .price span { font-size: 1rem; font-weight: 400; color: var(--text-dim); }
+.pricing-card .price .currency { font-size: 1.2rem; }
+.pricing-features { list-style: none; margin: 1.5rem 0 2rem; text-align: left; }
+.pricing-features li {
+    padding: 0.5rem 0; color: var(--text-dim); font-size: 0.95rem;
+    display: flex; align-items: center; gap: 0.6rem;
+}
+.pricing-features li i { color: #34d399; font-size: 0.8rem; }
+
+/* ===== HOW IT WORKS ===== */
+.steps-grid {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;
+}
+.step-card { text-align: center; position: relative; }
+.step-number {
+    width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800;
+    background: var(--gradient); color: #fff;
+}
+.step-card h3 { font-family: 'Outfit', sans-serif; margin-bottom: 0.5rem; }
+.step-card p { color: var(--text-dim); font-size: 0.9rem; }
+
+/* ===== TESTIMONIALS ===== */
+#testimonials { background: linear-gradient(180deg, #0a0f1a 0%, var(--bg-dark) 100%); }
+.testimonials-grid {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;
+}
+.testimonial-card {
+    padding: 2rem; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border);
+}
+.testimonial-stars { color: var(--gold); margin-bottom: 1rem; font-size: 0.9rem; }
+.testimonial-card blockquote {
+    font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-style: italic; margin-bottom: 1.5rem;
+}
+.testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+.testimonial-avatar {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--gradient);
+    display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
+}
+.testimonial-author-info h4 { font-size: 0.95rem; }
+.testimonial-author-info p { font-size: 0.8rem; color: var(--text-dim); }
+
+/* ===== CTA ===== */
+.cta-section {
+    padding: 6rem 2rem; text-align: center; position: relative; overflow: hidden;
+}
+.cta-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, rgba(167,139,250,0.1) 0%, transparent 70%);
+}
+.cta-content { position: relative; max-width: 600px; margin: 0 auto; }
+.cta-content h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+.cta-content p { color: var(--text-dim); margin-bottom: 2rem; font-size: 1.05rem; }
+
+/* ===== FOOTER ===== */
+footer {
+    padding: 3rem 2rem 1.5rem; border-top: 1px solid var(--border);
+    max-width: 1200px; margin: 0 auto;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+.footer-brand .nav-logo { display: inline-block; margin-bottom: 0.75rem; }
+.footer-brand p { color: var(--text-dim); font-size: 0.9rem; max-width: 280px; }
+.footer-col h4 { font-family: 'Outfit', sans-serif; margin-bottom: 1rem; font-size: 0.95rem; }
+.footer-col a { display: block; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; transition: color 0.2s; }
+.footer-col a:hover { color: var(--accent); }
+.footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.footer-bottom p { color: var(--text-dim); font-size: 0.8rem; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+.animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero-stats { gap: 1.5rem; }
+    .stat-number { font-size: 1.5rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .section-header h2 { font-size: 2rem; }
+}
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar">
+    <a href="#" class="nav-logo"><i class="fas fa-palette"></i> Art Gallery</a>
+    <ul class="nav-links">
+        <li><a href="#gallery">ผลงาน</a></li>
+        <li><a href="#features">ทำไมต้องเรา</a></li>
+        <li><a href="#pricing">ราคา</a></li>
+        <li><a href="#how-it-works">ขั้นตอน</a></li>
+        <li><a href="index.html">เอกสาร SRS</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">เริ่มต้นใช้งาน</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-sparkles"></i> แพลตฟอร์มศิลปะออนไลน์อันดับ 1 ของไทย</div>
+        <h1>ค้นพบ <span class="gradient-text">ผลงานศิลปะ</span> ที่จะเปลี่ยนพื้นที่ของคุณ</h1>
+        <p>เชื่อมต่อศิลปินกับผู้ชื่นชอบศิลปะ ผลงานต้นฉบับคุณภาพสูง พร้อมบริการพิมพ์และใส่กรอบระดับพรีเมียม</p>
+        <div class="hero-buttons">
+            <a href="#gallery" class="btn-primary"><i class="fas fa-eye"></i> ดูผลงานทั้งหมด</a>
+            <a href="#how-it-works" class="btn-outline"><i class="fas fa-play"></i> เริ่มต้นขายผลงาน</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><div class="stat-number">2,500+</div><div class="stat-label">ผลงานศิลปะ</div></div>
+            <div class="stat"><div class="stat-number">180+</div><div class="stat-label">ศิลปินชั้นนำ</div></div>
+            <div class="stat"><div class="stat-number">15K+</div><div class="stat-label">ลูกค้าทั่วไทย</div></div>
+            <div class="stat"><div class="stat-number">4.9</div><div class="stat-label">คะแนนรีวิว</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section id="gallery">
+    <div class="section-header">
+        <span class="section-tag">Gallery</span>
+        <h2>ผลงานศิลปะยอดนิยม</h2>
+        <p>คอลเลกชันผลงานคัดสรรจากศิลปินชั้นนำ พร้อมให้คุณเป็นเจ้าของ</p>
+    </div>
+    <div class="gallery-grid">
+        <div class="gallery-card animate-on-scroll">
+            <span class="gallery-card-badge">Best Seller</span>
+            <span class="gallery-card-price">฿1,200</span>
+            <img src="img/art1.png" alt="สุนทรียภาพแห่งขุนเขา">
+            <div class="gallery-card-overlay">
+                <div class="gallery-card-info"><h3>สุนทรียภาพแห่งขุนเขา</h3><p>โดย Chalermchai M. — สีน้ำมัน</p></div>
+            </div>
+        </div>
+        <div class="gallery-card animate-on-scroll">
+            <span class="gallery-card-price">฿1,800</span>
+            <img src="img/art2.png" alt="คลื่นแห่งอารมณ์">
+            <div class="gallery-card-overlay">
+                <div class="gallery-card-info"><h3>คลื่นแห่งอารมณ์</h3><p>โดย Siriporn K. — Abstract</p></div>
+            </div>
+        </div>
+        <div class="gallery-card animate-on-scroll">
+            <span class="gallery-card-badge">New</span>
+            <span class="gallery-card-price">฿950</span>
+            <img src="img/art3.png" alt="วัดไทยในสายหมอก">
+            <div class="gallery-card-overlay">
+                <div class="gallery-card-info"><h3>วัดไทยในสายหมอก</h3><p>โดย Anan P. — สีน้ำ</p></div>
+            </div>
+        </div>
+        <div class="gallery-card animate-on-scroll">
+            <span class="gallery-card-price">฿2,500</span>
+            <img src="img/art4.png" alt="ดอกไม้แห่งกาลเวลา">
+            <div class="gallery-card-overlay">
+                <div class="gallery-card-info"><h3>ดอกไม้แห่งกาลเวลา</h3><p>โดย Ploy R. — Digital Art</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features">
+    <div class="section-header">
+        <span class="section-tag">Features</span>
+        <h2>ทำไมต้อง Art Gallery?</h2>
+        <p>แพลตฟอร์มที่ออกแบบมาเพื่อศิลปินและผู้รักงานศิลปะโดยเฉพาะ</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon purple"><i class="fas fa-shield-halved"></i></div>
+            <h3>ปกป้องลิขสิทธิ์</h3>
+            <p>ระบบ Watermark อัตโนมัติบน AWS S3 ปกป้องผลงานต้นฉบับของศิลปินอย่างเข้มงวด</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon blue"><i class="fas fa-print"></i></div>
+            <h3>พิมพ์คุณภาพสูง</h3>
+            <p>เลือกขนาดพิมพ์ A4–A1 พร้อมตัวเลือกกรอบไม้หรืออลูมิเนียม ส่งตรงถึงบ้าน</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon gold"><i class="fas fa-credit-card"></i></div>
+            <h3>ชำระเงินปลอดภัย</h3>
+            <p>รองรับทั้ง Stripe (บัตรเครดิต) และ PromptPay (QR Code) มั่นใจทุกธุรกรรม</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon green"><i class="fas fa-chart-line"></i></div>
+            <h3>แดชบอร์ดศิลปิน</h3>
+            <p>ติดตามยอดขาย สถิติการเข้าชม จัดการ Portfolio ได้อย่างมืออาชีพ</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon pink"><i class="fas fa-heart"></i></div>
+            <h3>Wishlist ส่วนตัว</h3>
+            <p>บันทึกผลงานที่ชื่นชอบ รับแจ้งเตือนเมื่อมีโปรโมชันหรือราคาพิเศษ</p>
+        </div>
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon red"><i class="fas fa-mobile-screen"></i></div>
+            <h3>Mobile-First Design</h3>
+            <p>ใช้งานได้สะดวกทุกอุปกรณ์ ไม่ว่าจะเป็นมือถือ แท็บเล็ต หรือคอมพิวเตอร์</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing">
+    <div class="section-header">
+        <span class="section-tag">Pricing</span>
+        <h2>ราคาที่เข้าถึงได้</h2>
+        <p>เลือกแพ็กเกจที่เหมาะกับความต้องการของคุณ</p>
+    </div>
+    <div class="pricing-grid">
+        <div class="pricing-card animate-on-scroll">
+            <h3>ไฟล์ดิจิทัล</h3>
+            <p style="color:var(--text-dim); font-size:0.9rem;">ดาวน์โหลดไฟล์ต้นฉบับ High-res</p>
+            <div class="price"><span class="currency">฿</span>500 <span>/ ภาพ</span></div>
+            <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> ไฟล์ความละเอียดสูง (300 DPI)</li>
+                <li><i class="fas fa-check"></i> ไม่มีลายน้ำ</li>
+                <li><i class="fas fa-check"></i> ลิขสิทธิ์ใช้งานส่วนบุคคล</li>
+                <li><i class="fas fa-check"></i> ดาวน์โหลดได้ทันที</li>
+            </ul>
+            <a href="#cta" class="btn-outline" style="width:100%;justify-content:center;">เลือกแพ็กเกจ</a>
+        </div>
+        <div class="pricing-card featured animate-on-scroll">
+            <h3>พิมพ์ + กรอบ</h3>
+            <p style="color:var(--text-dim); font-size:0.9rem;">งานพิมพ์คุณภาพพร้อมใส่กรอบ</p>
+            <div class="price"><span class="currency">฿</span>1,500 <span>/ ภาพ</span></div>
+            <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> พิมพ์บนผ้าใบแคนวาส</li>
+                <li><i class="fas fa-check"></i> เลือกขนาด A4 - A1</li>
+                <li><i class="fas fa-check"></i> กรอบไม้หรืออลูมิเนียม</li>
+                <li><i class="fas fa-check"></i> จัดส่งฟรีทั่วประเทศ</li>
+                <li><i class="fas fa-check"></i> รับประกันคุณภาพ 1 ปี</li>
+            </ul>
+            <a href="#cta" class="btn-primary" style="width:100%;justify-content:center;">เลือกแพ็กเกจ</a>
+        </div>
+        <div class="pricing-card animate-on-scroll">
+            <h3>สำหรับศิลปิน</h3>
+            <p style="color:var(--text-dim); font-size:0.9rem;">เริ่มต้นขายผลงานของคุณ</p>
+            <div class="price" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ฟรี</div>
+            <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> สมัครเป็นศิลปินฟรี</li>
+                <li><i class="fas fa-check"></i> อัปโหลดผลงานไม่จำกัด</li>
+                <li><i class="fas fa-check"></i> แดชบอร์ดวิเคราะห์ยอดขาย</li>
+                <li><i class="fas fa-check"></i> ค่าคอมมิชชัน 15%</li>
+            </ul>
+            <a href="#cta" class="btn-outline" style="width:100%;justify-content:center;">สมัครเป็นศิลปิน</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section id="how-it-works">
+    <div class="section-header">
+        <span class="section-tag">How it works</span>
+        <h2>ขั้นตอนง่ายๆ</h2>
+        <p>จากการค้นพบจนถึงการเป็นเจ้าของ เพียงไม่กี่คลิก</p>
+    </div>
+    <div class="steps-grid">
+        <div class="step-card animate-on-scroll">
+            <div class="step-number">1</div>
+            <h3>ค้นหาผลงาน</h3>
+            <p>เลือกดูผลงานจากศิลปินมากมายตามสไตล์ที่ชอบ</p>
+        </div>
+        <div class="step-card animate-on-scroll">
+            <div class="step-number">2</div>
+            <h3>เลือกขนาดและกรอบ</h3>
+            <p>ปรับแต่งขนาดพิมพ์และสไตล์กรอบตามต้องการ</p>
+        </div>
+        <div class="step-card animate-on-scroll">
+            <div class="step-number">3</div>
+            <h3>ชำระเงิน</h3>
+            <p>จ่ายด้วยบัตรเครดิตหรือ PromptPay อย่างปลอดภัย</p>
+        </div>
+        <div class="step-card animate-on-scroll">
+            <div class="step-number">4</div>
+            <h3>รับผลงาน</h3>
+            <p>ดาวน์โหลดทันทีหรือรอรับงานพิมพ์พรีเมียมที่บ้าน</p>
+        </div>
+    </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section id="testimonials">
+    <div class="section-header">
+        <span class="section-tag">Testimonials</span>
+        <h2>เสียงจากลูกค้าของเรา</h2>
+        <p>ความประทับใจจากผู้ใช้งานจริง</p>
+    </div>
+    <div class="testimonials-grid">
+        <div class="testimonial-card animate-on-scroll">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <blockquote>"พิมพ์ลงบนผ้าใบแคนวาสออกมาได้สวยงามและคมชัดมากครับ คุ้มค่าราคามาก ศิลปินฝีมือดีทุกคน"</blockquote>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">ส</div>
+                <div class="testimonial-author-info"><h4>สมชาย ใจดี</h4><p>นักสะสมงานศิลปะ</p></div>
+            </div>
+        </div>
+        <div class="testimonial-card animate-on-scroll">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <blockquote>"ในฐานะศิลปิน แพลตฟอร์มนี้ใช้งานง่ายมาก ระบบ Watermark อัตโนมัติช่วยปกป้องผลงานได้ดีมาก"</blockquote>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">พ</div>
+                <div class="testimonial-author-info"><h4>พลอย รุ่งเรือง</h4><p>ศิลปินดิจิทัล</p></div>
+            </div>
+        </div>
+        <div class="testimonial-card animate-on-scroll">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
+            <blockquote>"สั่งซื้อภาพมาตกแต่งออฟฟิศ คุณภาพงานพิมพ์ดีเยี่ยม จัดส่งรวดเร็ว แพ็กเกจดีไม่เสียหาย"</blockquote>
+            <div class="testimonial-author">
+                <div class="testimonial-avatar">น</div>
+                <div class="testimonial-author-info"><h4>นภา ศรีสุข</h4><p>เจ้าของธุรกิจ Interior</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section id="cta" class="cta-section">
+    <div class="cta-content">
+        <h2>พร้อมเริ่มต้นแล้วหรือยัง?</h2>
+        <p>สมัครสมาชิกวันนี้ ไม่ว่าจะเป็นนักสะสมหรือศิลปิน เราพร้อมต้อนรับคุณ</p>
+        <div class="hero-buttons">
+            <a href="#" class="btn-primary"><i class="fas fa-rocket"></i> สมัครสมาชิกฟรี</a>
+            <a href="index.html" class="btn-outline"><i class="fas fa-file-lines"></i> ดูเอกสาร SRS</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="#" class="nav-logo"><i class="fas fa-palette"></i> Art Gallery</a>
+            <p>แพลตฟอร์มซื้อขายผลงานศิลปะออนไลน์ เชื่อมต่อศิลปินกับผู้ชื่นชอบศิลปะทั่วประเทศ</p>
+        </div>
+        <div class="footer-col">
+            <h4>แพลตฟอร์ม</h4>
+            <a href="#gallery">ผลงานทั้งหมด</a>
+            <a href="#features">คุณสมบัติ</a>
+            <a href="#pricing">ราคา</a>
+            <a href="#how-it-works">วิธีการใช้งาน</a>
+        </div>
+        <div class="footer-col">
+            <h4>สำหรับศิลปิน</h4>
+            <a href="#">สมัครเป็นศิลปิน</a>
+            <a href="#">อัปโหลดผลงาน</a>
+            <a href="#">แดชบอร์ด</a>
+            <a href="#">ค่าคอมมิชชัน</a>
+        </div>
+        <div class="footer-col">
+            <h4>เอกสาร</h4>
+            <a href="index.html">SRS Document</a>
+            <a href="analysis_design.md">Analysis & Design</a>
+            <a href="https://github.com/Nattapong7557/w1md">GitHub Repo</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 Art Gallery Platform — CSI204 Workshop #1 | Nattapong7557</p>
+    </div>
+</footer>
+
+<script>
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// Scroll animation observer
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+            setTimeout(() => entry.target.classList.add('visible'), index * 100);
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+</script>
+</body>
+</html>
