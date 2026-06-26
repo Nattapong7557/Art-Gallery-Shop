@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery - Analysis & Design Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg-primary: #0a0d16;
+    --bg-secondary: #111625;
+    --bg-glass: rgba(17, 22, 37, 0.7);
+    --border-glass: rgba(255,255,255,0.08);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #00f2fe;
+    --accent-purple: #9d4edd;
+    --accent-emerald: #10b981;
+    --accent-gold: #f59e0b;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    border-right: 1px solid var(--border-glass);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-glass);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sidebar-logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1rem;
+}
+
+.sidebar-logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sidebar-nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0;
+}
+
+.toc-title {
+    padding: 0 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toc-list li a {
+    display: block;
+    padding: 0.5rem 1.5rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-left: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toc-list li a:hover {
+    color: var(--accent-blue);
+    background: rgba(0, 242, 254, 0.04);
+    border-left-color: var(--accent-blue);
+}
+
+.toc-list li a.active {
+    color: var(--accent-blue);
+    background: rgba(0, 242, 254, 0.06);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.toc-list li.indent-1 a { padding-left: 2.5rem; font-size: 0.82rem; }
+.toc-list li.indent-2 a { padding-left: 3.5rem; font-size: 0.8rem; }
+
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--border-glass);
+}
+
+.sidebar-footer a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.link-srs {
+    background: linear-gradient(135deg, rgba(0,242,254,0.12), rgba(157,78,221,0.08));
+    border: 1px solid rgba(0,242,254,0.2);
+    color: #00f2fe;
+}
+
+.link-marketing {
+    background: linear-gradient(135deg, rgba(167,139,250,0.15), rgba(56,189,248,0.1));
+    border: 1px solid rgba(167,139,250,0.25);
+    color: #a78bfa;
+}
+
+.link-srs:hover, .link-marketing:hover {
+    transform: translateX(4px);
+}
+
+.footer-meta {
+    padding-top: 0.5rem;
+}
+
+.footer-meta p {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Main Content */
+.content-area {
+    flex: 1;
+    padding: 3rem 4rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* Markdown Styling */
+.markdown-body h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.markdown-body h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.markdown-body h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.markdown-body h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent-emerald);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-body p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.markdown-body strong { color: var(--text-primary); }
+
+.markdown-body ul, .markdown-body ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown-body li {
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+    line-height: 1.7;
+}
+
+.markdown-body a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.markdown-body a:hover { text-decoration: underline; }
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-glass);
+}
+
+.markdown-body thead th {
+    background: rgba(0, 242, 254, 0.08);
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.markdown-body tbody td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    color: var(--text-secondary);
+}
+
+.markdown-body tbody tr:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+.markdown-body code {
+    background: rgba(0, 242, 254, 0.08);
+    color: var(--accent-blue);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-family: 'Fira Code', monospace;
+}
+
+.markdown-body pre {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.markdown-body pre code {
+    background: none;
+    color: var(--text-primary);
+    padding: 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.markdown-body hr {
+    border: none;
+    height: 1px;
+    background: var(--border-glass);
+    margin: 3rem 0;
+}
+
+.markdown-body blockquote {
+    border-left: 4px solid var(--accent-blue);
+    background: rgba(0, 242, 254, 0.02);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Mermaid */
+.mermaid-container {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+}
+
+.mermaid-container svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Loading */
+.loading {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-secondary);
+}
+
+.loading i { font-size: 2rem; margin-bottom: 1rem; }
+
+/* Mobile Toggle */
+.mobile-toggle {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 200;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        z-index: 150;
+        transition: left 0.3s;
+    }
+    .sidebar.open { left: 0; }
+    .mobile-toggle { display: flex; }
+    .content-area { padding: 4rem 1.5rem 2rem; }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--bg-secondary); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <button class="mobile-toggle" id="mobile-toggle"><i class="fas fa-bars"></i></button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"><i class="fas fa-diagram-project"></i></div>
+                <span class="sidebar-logo-text">Analysis & Design</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <h4 class="toc-title">สารบัญเอกสาร</h4>
+            <ul class="toc-list" id="toc-list">
+                <li style="padding:1rem;text-align:center;color:var(--text-muted);">
+                    <i class="fas fa-spinner fa-spin"></i> กำลังโหลดสารบัญ...
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="link-srs"><i class="fas fa-file-lines"></i> เอกสาร SRS</a>
+            <a href="marketing.html" class="link-marketing"><i class="fas fa-store"></i> หน้า Marketing</a>
+            <div class="footer-meta">
+                <p>CSI204: Workshop #1</p>
+                <p>ระบบร้านขายรูปภาพศิลปะ</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="content-area">
+        <article id="markdown-content" class="markdown-body">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>กำลังโหลดเอกสาร Analysis & Design...</p>
+            </div>
+        </article>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('markdown-content');
+    const tocList = document.getElementById('toc-list');
+
+    // Initialize mermaid
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        themeVariables: {
+            darkMode: true,
+            background: '#111625',
+            primaryColor: '#3b3395',
+            primaryTextColor: '#f1f5f9',
+            lineColor: '#475569',
+            fontSize: '14px'
+        }
+    });
+
+    // Custom renderer for mermaid blocks
+    const renderer = new marked.Renderer();
+    const originalCode = renderer.code;
+
+    renderer.code = function({ text, lang }) {
+        if (lang === 'mermaid') {
+            const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+            return `<div class="mermaid-container"><pre class="mermaid" id="${id}">${text}</pre></div>`;
+        }
+        if (originalCode) {
+            return originalCode.call(this, { text, lang });
+        }
+        const escaped = text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `<pre><code class="language-${lang || ''}">${escaped}</code></pre>`;
+    };
+
+    marked.setOptions({ renderer, breaks: true, gfm: true });
+
+    try {
+        const response = await fetch('analysis_design.md');
+        if (!response.ok) throw new Error('Failed to load');
+        const mdText = await response.text();
+
+        container.innerHTML = marked.parse(mdText);
+
+        // Render mermaid diagrams
+        await mermaid.run({ querySelector: '.mermaid' });
+
+        // Build TOC
+        const headings = container.querySelectorAll('h1, h2, h3');
+        let tocHTML = '';
+        headings.forEach((heading, i) => {
+            const id = 'heading-' + i;
+            heading.id = id;
+            const level = parseInt(heading.tagName[1]);
+            const indent = level === 1 ? '' : level === 2 ? '' : 'indent-1';
+            const text = heading.textContent.substring(0, 40) + (heading.textContent.length > 40 ? '...' : '');
+            tocHTML += `<li class="${indent}"><a href="#${id}">${text}</a></li>`;
+        });
+        tocList.innerHTML = tocHTML;
+
+        // Scroll spy
+        const tocLinks = tocList.querySelectorAll('a');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    tocLinks.forEach(l => l.classList.remove('active'));
+                    const link = tocList.querySelector(`a[href="#${entry.target.id}"]`);
+                    if (link) link.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+
+        headings.forEach(h => observer.observe(h));
+
+    } catch (err) {
+        container.innerHTML = `<div class="loading"><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i><p>ไม่สามารถโหลดเอกสารได้ กรุณาเปิดผ่าน Live Server</p></div>`;
+    }
+
+    // Mobile toggle
+    document.getElementById('mobile-toggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+});
+</script>
+</body>
+</html>
