@@ -463,3 +463,510 @@ graph TD
 | **Auth** | JWT + OAuth2 (Google) | ปลอดภัย, Stateless |
 | **DevOps** | Docker + GitHub Actions | CI/CD Pipeline อัตโนมัติ |
 | **Hosting** | AWS EC2 / Elastic Beanstalk | ขยายขนาดได้ง่าย |
+
+---
+
+## 11. Software Architecture (สถาปัตยกรรมซอฟต์แวร์)
+
+สำหรับธุรกิจ SMEs ที่มีทั้งระบบขายสินค้าออนไลน์ ระบบสมาชิก การชำระเงิน และการเชื่อมต่อคลังสินค้า สามารถวิเคราะห์ **Software Architecture** ตามองค์ประกอบหลัก 3 ชั้น ได้ดังนี้:
+
+```mermaid
+graph TD
+    classDef layerTitle fill:#1e293b,stroke:#475569,stroke-width:2px,color:#fff,font-weight:bold
+    classDef frontend fill:#3b3395,stroke:#818cf8,stroke-width:1px,color:#fff
+    classDef backend fill:#0b5345,stroke:#34d399,stroke-width:1px,color:#fff
+    classDef database fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+    classDef external fill:#831843,stroke:#ec4899,stroke-width:1px,color:#fff
+
+    User(("👤 Users / Customers"))
+    Artist(("🎨 Artists"))
+    Admin(("🔧 Admin"))
+
+    subgraph FL ["1. Frontend Architecture"]
+        FW["Web App - React / Next.js"]:::frontend
+        FM["Mobile App - Flutter"]:::frontend
+        FA["Admin Dashboard"]:::frontend
+    end
+
+    subgraph BL ["2. Backend Architecture"]
+        AG["API Gateway"]:::backend
+        AS["Auth Service"]:::backend
+        PS["Product Service"]:::backend
+        OS["Order Service"]:::backend
+        PY["Payment Service"]:::backend
+        NS["Notification Service"]:::backend
+    end
+
+    subgraph DL ["3. Database Architecture"]
+        SQL["MySQL - Relational DB"]:::database
+        NoSQL["MongoDB - NoSQL DB"]:::database
+        Cache["Redis - Cache / Session"]:::database
+        S3["AWS S3 - File Storage"]:::database
+    end
+
+    subgraph EXT ["External Services"]
+        Stripe["Stripe Gateway"]:::external
+        Google["Google OAuth2"]:::external
+        CDN["CloudFront CDN"]:::external
+    end
+
+    User --> FW
+    Artist --> FW
+    Admin --> FA
+    User --> FM
+
+    FW --> AG
+    FM --> AG
+    FA --> AG
+
+    AG --> AS
+    AG --> PS
+    AG --> OS
+    AG --> PY
+
+    AS --> SQL
+    AS --> Cache
+    PS --> SQL
+    PS --> S3
+    OS --> SQL
+    PY --> SQL
+
+    PS --> NoSQL
+    NS --> NoSQL
+
+    PY --> Stripe
+    AS --> Google
+    FW --> CDN
+```
+
+---
+
+### 11.1 Frontend Architecture (ส่วนที่ผู้ใช้งานโต้ตอบกับระบบ)
+
+#### หน้าที่หลักของ Frontend
+| หน้าที่ | รายละเอียด |
+|---|---|
+| แสดงหน้าเว็บไซต์ / Mobile App | หน้า Landing Page, Gallery, รายละเอียดสินค้า |
+| ระบบสมัครสมาชิก / Login | ฟอร์มสมัครสมาชิก, Login ด้วยอีเมลหรือ Google |
+| แสดงสินค้า | Gallery ผลงานศิลปะ, ค้นหา, กรองตามหมวดหมู่/ราคา/สไตล์ |
+| ตะกร้าสินค้า (Cart) | เพิ่ม/ลบรายการ, เลือกขนาดพิมพ์, เลือกกรอบ |
+| ระบบชำระเงิน | Stripe (บัตรเครดิต), PromptPay (QR Code) |
+| Dashboard ผู้ดูแลระบบ | จัดการผู้ใช้, ตรวจสอบเนื้อหา, ดูรายงานยอดขาย |
+
+#### โครงสร้างสถาปัตยกรรม Frontend
+
+**Component-Based Architecture / Single Page Application (SPA)**
+
+```mermaid
+graph TD
+    classDef component fill:#312e81,stroke:#818cf8,stroke-width:1px,color:#fff
+    classDef page fill:#1e3a5f,stroke:#38bdf8,stroke-width:1px,color:#fff
+    classDef shared fill:#3f3f46,stroke:#a1a1aa,stroke-width:1px,color:#fff
+
+    subgraph SPA ["Single Page Application - React / Next.js"]
+        direction TB
+
+        subgraph Pages ["Pages / Routes"]
+            P1["/ Home Page"]:::page
+            P2["/gallery - Gallery"]:::page
+            P3["/artwork/:id - Detail"]:::page
+            P4["/cart - Shopping Cart"]:::page
+            P5["/checkout - Checkout"]:::page
+            P6["/login - Auth Page"]:::page
+            P7["/artist/dashboard - Artist Panel"]:::page
+            P8["/admin - Admin Dashboard"]:::page
+        end
+
+        subgraph Components ["Reusable Components"]
+            C1["Navbar"]:::component
+            C2["ArtworkCard"]:::component
+            C3["SearchFilter"]:::component
+            C4["CartItem"]:::component
+            C5["PaymentForm"]:::component
+            C6["ImageZoom"]:::component
+        end
+
+        subgraph State ["State Management - Redux / Zustand"]
+            S1["Auth State"]:::shared
+            S2["Cart State"]:::shared
+            S3["Product State"]:::shared
+        end
+    end
+
+    P1 --> C1
+    P1 --> C2
+    P2 --> C2
+    P2 --> C3
+    P3 --> C6
+    P4 --> C4
+    P5 --> C5
+
+    C2 --> S3
+    C4 --> S2
+    C1 --> S1
+```
+
+#### เทคโนโลยีที่เหมาะสม
+
+| ประเภท | เทคโนโลยี | เหตุผล |
+|---|---|---|
+| **Web Frontend** | React / Next.js | Component-based, SSR สำหรับ SEO, Ecosystem ใหญ่ |
+| **Mobile Frontend** | Flutter / React Native | Cross-platform (iOS + Android) จาก Codebase เดียว |
+| **State Management** | Redux Toolkit / Zustand | จัดการ State ระดับ Global (Cart, Auth, Product) |
+| **UI Framework** | Material UI / Chakra UI | Component สำเร็จรูป, Responsive, Accessible |
+
+#### สิ่งที่ควรพิจารณา
+
+| หมวด | รายละเอียด |
+|---|---|
+| **UX/UI** | Responsive Design, Mobile First, User Experience ที่ลื่นไหล |
+| **Security** | JWT Authentication สำหรับ API calls, OAuth2 / SSO ผ่าน Google |
+| **Scalability** | ใช้ CDN (CloudFront) สำหรับ Static Assets, Browser Caching, Lazy Loading สำหรับรูปภาพ |
+| **Performance** | Code Splitting, Image Optimization (WebP), Virtual Scrolling สำหรับ Gallery ขนาดใหญ่ |
+
+---
+
+### 11.2 Backend Architecture (ส่วนประมวลผลหลักของระบบ)
+
+#### หน้าที่หลักของ Backend
+| หน้าที่ | รายละเอียด |
+|---|---|
+| จัดการ Business Logic | ประมวลผลคำสั่งซื้อ, คำนวณราคา, จัดการ workflow |
+| ระบบสมาชิก | สมัคร, Login, จัดการ Profile, Role-based Access |
+| ระบบคำสั่งซื้อ | สร้าง Order, อัปเดตสถานะ, ติดตามการจัดส่ง |
+| ระบบชำระเงิน | เชื่อมต่อ Payment Gateway, จัดการ Webhook |
+| ระบบจัดการสินค้า | CRUD ผลงานศิลปะ, อัปโหลดภาพ, สร้าง Watermark |
+| เชื่อมต่อ API ภายนอก | Stripe, Google OAuth, AWS S3, Email Service |
+
+#### โครงสร้างสถาปัตยกรรม Backend
+
+**ระยะเริ่มต้น: Monolithic Architecture** (เหมาะกับทีมเล็ก พัฒนาเร็ว)
+
+```mermaid
+graph LR
+    classDef mono fill:#0b5345,stroke:#34d399,stroke-width:1px,color:#fff
+    classDef db fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+
+    Client["Client App"] --> Monolith
+
+    subgraph Monolith ["Monolithic Backend - Node.js / Express"]
+        direction TB
+        Auth["Auth Module"]:::mono
+        Product["Product Module"]:::mono
+        Order["Order Module"]:::mono
+        Payment["Payment Module"]:::mono
+        Upload["Upload Module"]:::mono
+    end
+
+    Monolith --> DB["MySQL Database"]:::db
+    Monolith --> S3["AWS S3"]:::db
+```
+
+**ระยะขยายระบบ: Microservices Architecture** (แยกบริการเป็นอิสระต่อการให้บริการ)
+
+```mermaid
+graph TB
+    classDef gateway fill:#1e3a5f,stroke:#38bdf8,stroke-width:2px,color:#fff
+    classDef service fill:#0b5345,stroke:#34d399,stroke-width:1px,color:#fff
+    classDef db fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+    classDef queue fill:#831843,stroke:#ec4899,stroke-width:1px,color:#fff
+
+    Client["Client Apps"] --> GW
+
+    GW["API Gateway - Kong / Nginx"]:::gateway
+
+    subgraph Services ["Microservices"]
+        direction LR
+        AuthSvc["Auth Service"]:::service
+        ProductSvc["Product Service"]:::service
+        OrderSvc["Order Service"]:::service
+        PaymentSvc["Payment Service"]:::service
+        NotifSvc["Notification Service"]:::service
+    end
+
+    GW --> AuthSvc
+    GW --> ProductSvc
+    GW --> OrderSvc
+    GW --> PaymentSvc
+
+    MQ["Message Queue - RabbitMQ"]:::queue
+
+    OrderSvc --> MQ
+    MQ --> PaymentSvc
+    MQ --> NotifSvc
+
+    AuthSvc --> DB1["MySQL - Users"]:::db
+    ProductSvc --> DB2["MySQL - Products"]:::db
+    ProductSvc --> S3["AWS S3 - Images"]:::db
+    OrderSvc --> DB3["MySQL - Orders"]:::db
+    PaymentSvc --> DB4["MySQL - Payments"]:::db
+    NotifSvc --> DB5["MongoDB - Logs"]:::db
+
+    AuthSvc --> Redis["Redis - Sessions"]:::db
+```
+
+#### เทคโนโลยีที่เหมาะสม
+
+| ประเภท | เทคโนโลยี | เหตุผล |
+|---|---|---|
+| **Backend Framework** | Node.js / Express.js | Non-blocking I/O, npm ecosystem ขนาดใหญ่, JavaScript ตลอด Stack |
+| **Alternative** | Django (Python) / Spring Boot (Java) | เหมาะกับทีมที่ถนัด Python หรือ Java |
+| **API Architecture** | REST API / GraphQL | REST เรียบง่าย, GraphQL ยืดหยุ่นสำหรับ query ซับซ้อน |
+| **API Gateway** | Kong / Nginx / AWS API Gateway | Authentication, Routing, Rate Limiting, Load Balancing |
+| **Message Queue** | RabbitMQ / Apache Kafka | สำหรับ Async Processing (ส่งอีเมล, ประมวลผลภาพ) |
+
+#### DevOps / Infrastructure
+
+| ประเภท | เทคโนโลยี | เหตุผล |
+|---|---|---|
+| **Container** | Docker + Docker Compose | แยก Environment, Deploy สะดวก, Reproducible |
+| **CI/CD** | GitHub Actions | Automated Testing, Build, Deploy Pipeline |
+| **Cloud** | Amazon Web Services (AWS) | EC2 / ECS สำหรับ Compute, S3 สำหรับ Storage, RDS สำหรับ Database |
+| **Monitoring** | Prometheus + Grafana | ติดตาม Performance, Alert เมื่อระบบมีปัญหา |
+| **Logging** | ELK Stack (Elasticsearch, Logstash, Kibana) | รวมศูนย์ Log จากทุก Service, ค้นหาง่าย |
+
+#### แผนภาพ CI/CD Pipeline
+
+```mermaid
+graph LR
+    classDef dev fill:#312e81,stroke:#818cf8,stroke-width:1px,color:#fff
+    classDef ci fill:#0b5345,stroke:#34d399,stroke-width:1px,color:#fff
+    classDef deploy fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+
+    A["Developer Push Code"]:::dev --> B["GitHub Actions Triggered"]:::ci
+    B --> C["Run Unit Tests"]:::ci
+    C --> D["Build Docker Image"]:::ci
+    D --> E["Push to Container Registry"]:::ci
+    E --> F{"Environment?"}:::ci
+    F -->|Staging| G["Deploy to Staging"]:::deploy
+    F -->|Production| H["Deploy to AWS ECS"]:::deploy
+    G --> I["Run Integration Tests"]:::ci
+    I --> H
+```
+
+---
+
+### 11.3 Database Architecture (ระบบจัดเก็บข้อมูล)
+
+#### หน้าที่หลักของ Database
+| หน้าที่ | รายละเอียด |
+|---|---|
+| เก็บข้อมูลผู้ใช้ | Profile, Credentials, Role, Address |
+| เก็บสินค้า | ข้อมูลผลงานศิลปะ, ราคา, หมวดหมู่, Tags |
+| คำสั่งซื้อ | Order, Order Items, สถานะ, ที่อยู่จัดส่ง |
+| รายการชำระเงิน | Transaction, Payment Method, Status |
+| ประวัติการทำงาน | Activity Log, Audit Trail, Session |
+
+#### โครงสร้าง Database ตามรูปแบบฐานข้อมูล
+
+**Relational Database (SQL)** — เหมาะกับข้อมูลธุรกรรม ระบบสั่งซื้อ ความถูกต้องของข้อมูลสูง
+
+| ฐานข้อมูล | ใช้เก็บข้อมูล | จุดเด่น |
+|---|---|---|
+| **MySQL** | Users, Artists, Artworks, Orders, Payments, Categories | ACID Compliance, เหมาะกับข้อมูลธุรกรรม |
+| **PostgreSQL** | ทางเลือก — รองรับ JSON, Full-text Search | Advanced features, Extensible |
+| **Microsoft SQL Server** | ทางเลือกองค์กรขนาดใหญ่ | Enterprise-grade, BI Integration |
+
+**NoSQL Database** — เหมาะกับข้อมูล Log, Session, Big Data, Recommendation
+
+| ฐานข้อมูล | ใช้เก็บข้อมูล | จุดเด่น |
+|---|---|---|
+| **MongoDB** | Reviews, Tags, Search Index, Activity Logs | Schema ยืดหยุ่น, Document-based |
+| **Redis** | Session, Cache, Cart (ชั่วคราว), Rate Limiting | In-memory, เร็วมาก, TTL support |
+
+#### แผนภาพ Database Architecture
+
+```mermaid
+graph TB
+    classDef sql fill:#1e3a5f,stroke:#38bdf8,stroke-width:1px,color:#fff
+    classDef nosql fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+    classDef cache fill:#831843,stroke:#ec4899,stroke-width:1px,color:#fff
+    classDef storage fill:#1b4332,stroke:#34d399,stroke-dasharray: 5 5,color:#fff
+
+    App["Backend Application"] --> ReadWrite
+
+    subgraph ReadWrite ["Data Access Layer"]
+        ORM["ORM - Sequelize / Prisma"]
+    end
+
+    subgraph SQL_DB ["Relational Database - MySQL 8"]
+        direction LR
+        T1["users"]:::sql
+        T2["artists"]:::sql
+        T3["artworks"]:::sql
+        T4["categories"]:::sql
+        T5["orders"]:::sql
+        T6["order_items"]:::sql
+        T7["payments"]:::sql
+        T8["wishlists"]:::sql
+    end
+
+    subgraph NoSQL_DB ["NoSQL - MongoDB"]
+        direction LR
+        M1["reviews"]:::nosql
+        M2["tags"]:::nosql
+        M3["activity_logs"]:::nosql
+        M4["search_index"]:::nosql
+    end
+
+    subgraph Cache_DB ["Cache Layer - Redis"]
+        direction LR
+        R1["Session Store"]:::cache
+        R2["Artwork Cache"]:::cache
+        R3["Cart Temp Data"]:::cache
+        R4["Rate Limiter"]:::cache
+    end
+
+    subgraph File_Storage ["File Storage - AWS S3"]
+        direction LR
+        FS1["High-res Originals - Private"]:::storage
+        FS2["Watermarked Previews - Public"]:::storage
+        FS3["User Avatars"]:::storage
+    end
+
+    ORM --> SQL_DB
+    App --> NoSQL_DB
+    App --> Cache_DB
+    App --> File_Storage
+```
+
+#### Database Design Principles
+
+| หลักการ | รายละเอียด |
+|---|---|
+| **Normalization** | ออกแบบตาราง SQL ให้อยู่ในรูปแบบ 3NF (Third Normal Form) เพื่อลดความซ้ำซ้อนของข้อมูล |
+| **Indexing** | สร้าง Index บนคอลัมน์ที่ใช้ค้นหาบ่อย เช่น `email`, `artwork_id`, `order_date` |
+| **Foreign Keys** | กำหนด FK Constraints เพื่อรักษา Referential Integrity ระหว่างตาราง |
+| **Backup & Recovery** | Automated Daily Backup, Point-in-Time Recovery, Cross-region Replication |
+| **Partitioning** | แบ่ง Partition ตาราง `orders` และ `payments` ตามเดือน เมื่อข้อมูลมีขนาดใหญ่ |
+| **Read Replica** | ใช้ Read Replica สำหรับ Query ที่ไม่ต้องการ Real-time เพื่อลด Load บน Primary DB |
+
+#### ตัวอย่าง SQL Schema
+
+```sql
+-- สร้างตาราง users
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('customer', 'artist', 'admin') DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email (email),
+    INDEX idx_role (role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- สร้างตาราง artworks
+CREATE TABLE artworks (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    artist_id INT NOT NULL,
+    category_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    high_res_url VARCHAR(500) NOT NULL,
+    preview_url VARCHAR(500) NOT NULL,
+    price_digital DECIMAL(10,2) NOT NULL,
+    price_print_base DECIMAL(10,2),
+    tags VARCHAR(500),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(id),
+    INDEX idx_artist (artist_id),
+    INDEX idx_category (category_id),
+    FULLTEXT INDEX idx_search (title, description, tags)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- สร้างตาราง orders
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    order_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('pending','paid','printing','shipped','completed','cancelled') DEFAULT 'pending',
+    total_amount DECIMAL(10,2) NOT NULL,
+    shipping_address TEXT,
+    tracking_number VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    INDEX idx_user (user_id),
+    INDEX idx_status (status),
+    INDEX idx_date (order_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+---
+
+### 11.4 สรุปภาพรวม Software Architecture
+
+```mermaid
+graph TB
+    classDef user fill:#312e81,stroke:#818cf8,stroke-width:2px,color:#fff
+    classDef frontend fill:#3b3395,stroke:#818cf8,stroke-width:1px,color:#fff
+    classDef gateway fill:#1e3a5f,stroke:#38bdf8,stroke-width:2px,color:#fff
+    classDef service fill:#0b5345,stroke:#34d399,stroke-width:1px,color:#fff
+    classDef db fill:#7e5109,stroke:#f59e0b,stroke-width:1px,color:#fff
+    classDef ext fill:#831843,stroke:#ec4899,stroke-width:1px,color:#fff
+
+    U1(("👤 Customer")):::user
+    U2(("🎨 Artist")):::user
+    U3(("🔧 Admin")):::user
+
+    subgraph FRONT ["Layer 1: Frontend Architecture"]
+        Web["Web App - React/Next.js - SPA"]:::frontend
+        Mobile["Mobile App - Flutter"]:::frontend
+        AdminUI["Admin Dashboard"]:::frontend
+    end
+
+    U1 --> Web
+    U1 --> Mobile
+    U2 --> Web
+    U3 --> AdminUI
+
+    subgraph BACK ["Layer 2: Backend Architecture"]
+        GW["API Gateway - Authentication - Routing - Rate Limit"]:::gateway
+
+        subgraph MONO ["Phase 1: Monolithic"]
+            M1["Express.js - All-in-One"]:::service
+        end
+
+        subgraph MICRO ["Phase 2: Microservices"]
+            MS1["Auth Service"]:::service
+            MS2["Product Service"]:::service
+            MS3["Order Service"]:::service
+            MS4["Payment Service"]:::service
+            MS5["Notification Service"]:::service
+        end
+    end
+
+    Web --> GW
+    Mobile --> GW
+    AdminUI --> GW
+
+    GW --> MONO
+    GW --> MICRO
+
+    subgraph DATA ["Layer 3: Database Architecture"]
+        MySQL["MySQL 8 - Transactions - Users / Orders / Payments"]:::db
+        Mongo["MongoDB - Reviews / Tags / Logs"]:::db
+        RedisDB["Redis - Session / Cache"]:::db
+        AWS["AWS S3 - Images"]:::db
+    end
+
+    MONO --> DATA
+    MICRO --> DATA
+
+    subgraph EXTERNAL ["External Services"]
+        StripeAPI["Stripe Payment"]:::ext
+        GoogleAPI["Google OAuth2"]:::ext
+        CDNAPI["CloudFront CDN"]:::ext
+        EmailAPI["SendGrid Email"]:::ext
+    end
+
+    BACK --> EXTERNAL
+```
+
+| Layer | สถาปัตยกรรม | เทคโนโลยีหลัก | หน้าที่ |
+|---|---|---|---|
+| **Frontend** | Component-Based / SPA | React, Next.js, Flutter | แสดง UI, จัดการ State, เรียก API |
+| **Backend** | Monolithic → Microservices | Node.js, Express, Docker | Business Logic, API, Authentication |
+| **Database** | SQL + NoSQL + Cache | MySQL, MongoDB, Redis | จัดเก็บข้อมูล, Session, Caching |
+| **Infrastructure** | Cloud-native | AWS, Docker, GitHub Actions | CI/CD, Hosting, Storage, CDN |
+
