@@ -1,0 +1,50 @@
+%% System Architecture Diagram
+%% ระบบร้านขายรูปภาพศิลปะออนไลน์ (Art Gallery Platform)
+%% ไฟล์นี้สามารถเปิดดูใน Mermaid Live Editor ได้ที่ https://mermaid.live
+
+graph TD
+    classDef subBlock fill:#ffffff,stroke:#666,stroke-width:1px,color:#000
+    classDef storage fill:#1b4332,stroke:#fff,stroke-dasharray: 5 5,color:#fff
+
+    subgraph Frontend_Layer ["Frontend Layer — ร้านขายรูปศิลปะ"]
+        direction LR
+        F1["Art gallery / Browse artwork"]:::subBlock
+        F2["Artist profile / Portfolio"]:::subBlock
+        F3["Artwork detail / Zoom / Price"]:::subBlock
+        F4["Cart / Checkout / Print size"]:::subBlock
+        F5["Artist panel / Upload / Manage"]:::subBlock
+        Auth["Login JWT / OAuth2"]:::subBlock
+    end
+    style Frontend_Layer fill:#3b3395,stroke:#fff,stroke-width:2px,color:#fff
+
+    subgraph Backend_Layer ["Backend Layer — Business Logic"]
+        direction TB
+        B1["API Gateway / Auth / Rate limit"]:::subBlock
+        B2["Artwork service / Upload"]:::subBlock
+        B3["Order service / Shipping"]:::subBlock
+        B4["Payment service / Stripe"]:::subBlock
+        S3["AWS S3 Cloud Storage"]:::storage
+    end
+    style Backend_Layer fill:#0b5345,stroke:#fff,stroke-width:2px,color:#fff
+
+    subgraph Database_Layer ["Database Layer — Data Storage"]
+        direction LR
+        subgraph MySQL_DB ["Relational DB — MySQL"]
+            DB1["Users / Artists / Artworks / Orders / Payments"]:::subBlock
+        end
+        style MySQL_DB fill:#7e5109,stroke:#fff,color:#fff
+        subgraph NoSQL_Redis ["NoSQL + Redis"]
+            DB2["MongoDB Reviews Tags / Redis Session Cache"]:::subBlock
+        end
+        style NoSQL_Redis fill:#7e5109,stroke:#fff,color:#fff
+    end
+    style Database_Layer fill:#784212,stroke:#fff,stroke-width:2px,color:#fff
+
+    Frontend_Layer -->|REST API| B1
+    B1 --> B2
+    B1 --> B3
+    B1 --> B4
+    B2 <--> S3
+    B2 -->|Query| Database_Layer
+    B3 -->|Query| Database_Layer
+    B4 -->|Query| Database_Layer
