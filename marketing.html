@@ -8,610 +8,564 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06080f;--bg2:#0d1117;--bg3:#161b22;--glass:rgba(13,17,23,0.75);--border:rgba(255,255,255,0.06);--text:#f0f4f8;--dim:#8b95a5;--muted:#5a6577;--accent:#a78bfa;--accent2:#38bdf8;--green:#34d399;--gold:#f59e0b;--red:#ef4444;--pink:#ec4899;--grad:linear-gradient(135deg,#a78bfa,#38bdf8,#34d399)}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans Thai',sans-serif;overflow-x:hidden;line-height:1.6}
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0.8rem 2rem;background:rgba(6,8,15,0.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;transition:all .3s}
+nav.scrolled{padding:0.5rem 2rem;background:rgba(6,8,15,0.95)}
+.nav-logo{font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;display:flex;align-items:center;gap:.5rem}
+.nav-logo i{-webkit-text-fill-color:#a78bfa}
+.nav-links{display:flex;gap:1.5rem;list-style:none;align-items:center}
+.nav-links a{color:var(--dim);text-decoration:none;font-weight:500;font-size:.9rem;transition:color .3s}
+.nav-links a:hover{color:var(--accent)}
+.cart-btn{position:relative;background:none;border:1px solid var(--border);color:var(--text);width:42px;height:42px;border-radius:12px;cursor:pointer;font-size:1.1rem;transition:all .3s;display:flex;align-items:center;justify-content:center}
+.cart-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cart-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none}
+.cart-badge.show{display:flex}
+.nav-cta{padding:.55rem 1.3rem;border-radius:50px;border:none;cursor:pointer;background:var(--grad);color:#fff;font-weight:600;font-size:.85rem;transition:all .3s;text-decoration:none}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(167,139,250,0.3)}
+.nav-right{display:flex;align-items:center;gap:.75rem}
 
-:root {
-    --bg-dark: #06080f;
-    --bg-card: #0d1117;
-    --bg-glass: rgba(13, 17, 23, 0.6);
-    --border: rgba(255,255,255,0.06);
-    --text: #f0f4f8;
-    --text-dim: #8b95a5;
-    --accent: #a78bfa;
-    --accent2: #38bdf8;
-    --gold: #f59e0b;
-    --gradient: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%);
-    --gradient-gold: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
-}
+/* HERO */
+.hero{min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:7rem 2rem 3rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(167,139,250,0.1) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(56,189,248,0.07) 0%,transparent 60%)}
+.hero-content{position:relative;max-width:750px}
+.hero-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border-radius:50px;font-size:.8rem;font-weight:500;background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2);color:var(--accent);margin-bottom:1.5rem}
+.hero h1{font-family:'Outfit',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;line-height:1.1;margin-bottom:1.2rem}
+.hero h1 .gt{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.05rem;color:var(--dim);max-width:550px;margin:0 auto 2rem}
+.hero-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+.btn-p{padding:.8rem 2rem;border-radius:50px;border:none;cursor:pointer;background:var(--grad);color:#fff;font-weight:700;font-size:.95rem;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(167,139,250,0.3)}
+.btn-o{padding:.8rem 2rem;border-radius:50px;cursor:pointer;background:transparent;border:1.5px solid rgba(255,255,255,0.12);color:var(--text);font-weight:600;font-size:.95rem;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+.btn-o:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-3px)}
+.hero-stats{display:flex;justify-content:center;gap:2.5rem;margin-top:3rem}
+.stat{text-align:center}
+.stat-num{font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:.8rem;color:var(--dim);margin-top:.15rem}
 
-html { scroll-behavior: smooth; }
+/* SECTIONS */
+section{padding:5rem 2rem}
+.sec-head{text-align:center;max-width:600px;margin:0 auto 3rem}
+.sec-tag{display:inline-block;padding:.35rem .9rem;border-radius:50px;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;background:rgba(167,139,250,0.1);color:var(--accent);margin-bottom:.8rem}
+.sec-head h2{font-family:'Outfit',sans-serif;font-size:2.2rem;font-weight:800;margin-bottom:.7rem}
+.sec-head p{color:var(--dim);font-size:1rem}
 
-body {
-    background: var(--bg-dark);
-    color: var(--text);
-    font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
+/* CATEGORIES */
+#categories{background:linear-gradient(180deg,var(--bg),#0a0f1a)}
+.cat-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.cat-card{padding:1.5rem 1rem;border-radius:16px;background:var(--bg2);border:1px solid var(--border);text-align:center;cursor:pointer;transition:all .3s}
+.cat-card:hover,.cat-card.active{border-color:rgba(167,139,250,0.4);transform:translateY(-4px);background:rgba(167,139,250,0.06)}
+.cat-icon{font-size:2rem;margin-bottom:.75rem}
+.cat-card h3{font-family:'Outfit',sans-serif;font-size:.95rem;margin-bottom:.25rem}
+.cat-card p{font-size:.8rem;color:var(--dim)}
 
-/* ===== NAVBAR ===== */
-nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-    padding: 1rem 2rem;
-    background: rgba(6, 8, 15, 0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-    transition: all 0.3s ease;
-}
-nav.scrolled { padding: 0.6rem 2rem; background: rgba(6, 8, 15, 0.95); }
-.nav-logo {
-    font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800;
-    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    text-decoration: none;
-}
-.nav-links { display: flex; gap: 2rem; list-style: none; }
-.nav-links a {
-    color: var(--text-dim); text-decoration: none; font-weight: 500; font-size: 0.95rem;
-    transition: color 0.3s; position: relative;
-}
-.nav-links a:hover { color: var(--accent); }
-.nav-links a::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
-    background: var(--gradient); transition: width 0.3s;
-}
-.nav-links a:hover::after { width: 100%; }
-.nav-cta {
-    padding: 0.6rem 1.5rem; border-radius: 50px; border: none; cursor: pointer;
-    background: var(--gradient); color: #fff; font-weight: 600; font-size: 0.9rem;
-    transition: transform 0.3s, box-shadow 0.3s; text-decoration: none;
-}
-.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(167,139,250,0.3); }
+/* GALLERY */
+#shop{background:linear-gradient(180deg,#0a0f1a,var(--bg))}
+.gallery-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.25rem}
+.art-card{border-radius:16px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);transition:all .4s;position:relative}
+.art-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.4);border-color:rgba(167,139,250,0.25)}
+.art-card img{width:100%;height:260px;object-fit:cover;transition:transform .5s}
+.art-card:hover img{transform:scale(1.05)}
+.art-badge{position:absolute;top:.8rem;left:.8rem;padding:.25rem .7rem;border-radius:50px;font-size:.7rem;font-weight:600;color:#fff}
+.art-badge.hot{background:linear-gradient(135deg,#ef4444,#ec4899)}
+.art-badge.new{background:linear-gradient(135deg,#34d399,#38bdf8)}
+.art-price{position:absolute;top:.8rem;right:.8rem;padding:.3rem .8rem;border-radius:50px;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);color:var(--gold);font-weight:700;font-size:.85rem}
+.art-info{padding:1rem 1.2rem}
+.art-info h3{font-family:'Outfit',sans-serif;font-size:1rem;margin-bottom:.2rem}
+.art-meta{font-size:.8rem;color:var(--dim);margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.art-actions{display:flex;gap:.5rem}
+.art-actions button{flex:1;padding:.55rem;border-radius:10px;border:none;cursor:pointer;font-weight:600;font-size:.8rem;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.3rem}
+.btn-cart{background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);color:var(--accent)}
+.btn-cart:hover{background:rgba(167,139,250,0.25)}
+.btn-cart.added{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.3);color:var(--green)}
+.btn-wish{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--dim);width:40px;flex:none}
+.btn-wish:hover{color:var(--pink);border-color:rgba(236,72,153,0.3)}
+.btn-wish.liked{color:var(--pink)}
 
-/* ===== HERO ===== */
-.hero {
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden;
-}
-.hero::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 20% 50%, rgba(167,139,250,0.12) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(56,189,248,0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 80%, rgba(52,211,153,0.06) 0%, transparent 50%);
-}
-.hero-content { position: relative; max-width: 800px; }
-.hero-badge {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.85rem; font-weight: 500;
-    background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.2); color: var(--accent);
-    margin-bottom: 2rem;
-    animation: fadeInUp 0.8s ease;
-}
-.hero h1 {
-    font-family: 'Outfit', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900;
-    line-height: 1.1; margin-bottom: 1.5rem;
-    animation: fadeInUp 0.8s ease 0.15s both;
-}
-.hero h1 .gradient-text {
-    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.hero p {
-    font-size: 1.15rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 2.5rem;
-    animation: fadeInUp 0.8s ease 0.3s both;
-}
-.hero-buttons {
-    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-    animation: fadeInUp 0.8s ease 0.45s both;
-}
-.btn-primary {
-    padding: 0.9rem 2.2rem; border-radius: 50px; border: none; cursor: pointer;
-    background: var(--gradient); color: #fff; font-weight: 700; font-size: 1rem;
-    transition: all 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;
-}
-.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(167,139,250,0.35); }
-.btn-outline {
-    padding: 0.9rem 2.2rem; border-radius: 50px; cursor: pointer;
-    background: transparent; border: 1.5px solid rgba(255,255,255,0.15); color: var(--text);
-    font-weight: 600; font-size: 1rem; transition: all 0.3s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 0.5rem;
-}
-.btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+/* CART SIDEBAR */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-panel{position:fixed;top:0;right:-440px;width:420px;max-width:100vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:2001;display:flex;flex-direction:column;transition:right .35s ease}
+.cart-panel.open{right:0}
+.cart-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cart-header h2{font-family:'Outfit',sans-serif;font-size:1.2rem;display:flex;align-items:center;gap:.5rem}
+.cart-header h2 .count{background:var(--accent);color:#fff;font-size:.7rem;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cart-close{background:none;border:none;color:var(--dim);font-size:1.3rem;cursor:pointer;transition:color .2s}
+.cart-close:hover{color:var(--text)}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--dim)}
+.cart-empty i{font-size:3rem;margin-bottom:1rem;color:var(--muted)}
+.ci{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--border)}
+.ci img{width:70px;height:70px;border-radius:10px;object-fit:cover}
+.ci-info{flex:1}
+.ci-info h4{font-size:.9rem;margin-bottom:.15rem}
+.ci-info p{font-size:.75rem;color:var(--dim)}
+.ci-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:.5rem}
+.ci-qty{display:flex;align-items:center;gap:.4rem}
+.ci-qty button{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.ci-qty span{font-size:.85rem;font-weight:600;min-width:20px;text-align:center}
+.ci-price{font-weight:700;color:var(--gold);font-size:.9rem}
+.ci-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;transition:color .2s;margin-left:.5rem}
+.ci-remove:hover{color:var(--red)}
+.cart-footer{padding:1.25rem 1.5rem;border-top:1px solid var(--border)}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:1rem}
+.cart-total span:first-child{color:var(--dim)}
+.cart-total span:last-child{font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cart-checkout{width:100%;padding:.85rem;border-radius:14px;border:none;cursor:pointer;background:var(--grad);color:#fff;font-weight:700;font-size:1rem;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.cart-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(167,139,250,0.3)}
 
-.hero-stats {
-    display: flex; justify-content: center; gap: 3rem; margin-top: 4rem;
-    animation: fadeInUp 0.8s ease 0.6s both;
-}
-.stat { text-align: center; }
-.stat-number {
-    font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 800;
-    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.stat-label { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.25rem; }
+/* CHECKOUT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-head h2{font-family:'Outfit',sans-serif;font-size:1.2rem}
+.modal-body{padding:1.5rem}
+.form-group{margin-bottom:1.2rem}
+.form-group label{display:block;font-size:.85rem;font-weight:600;margin-bottom:.4rem;color:var(--dim)}
+.form-group input,.form-group select{width:100%;padding:.7rem 1rem;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:.9rem;font-family:inherit;transition:border .3s}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
+.pay-method{padding:1rem;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;transition:all .3s}
+.pay-method:hover,.pay-method.selected{border-color:var(--accent);background:rgba(167,139,250,0.06)}
+.pay-method i{font-size:1.5rem;margin-bottom:.4rem;display:block}
+.pay-method span{font-size:.8rem;font-weight:600}
+.pay-credit{color:var(--accent2)}
+.pay-qr{color:var(--green)}
+.order-summary{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1.5rem}
+.os-row{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.9rem;color:var(--dim)}
+.os-row.total{border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;font-weight:700;color:var(--text);font-size:1.05rem}
+.os-row.total span:last-child{color:var(--gold)}
+.btn-pay{width:100%;padding:.85rem;border-radius:14px;border:none;cursor:pointer;background:var(--grad);color:#fff;font-weight:700;font-size:1rem;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.btn-pay:hover{box-shadow:0 8px 25px rgba(167,139,250,0.3)}
 
-/* ===== SECTIONS ===== */
-section { padding: 6rem 2rem; }
-.section-header { text-align: center; max-width: 650px; margin: 0 auto 4rem; }
-.section-tag {
-    display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.8rem;
-    font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
-    background: rgba(167,139,250,0.1); color: var(--accent); margin-bottom: 1rem;
-}
-.section-header h2 {
-    font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;
-}
-.section-header p { color: var(--text-dim); font-size: 1.05rem; }
+/* SUCCESS MODAL */
+.success-modal{text-align:center;padding:2rem}
+.success-modal i{font-size:4rem;color:var(--green);margin-bottom:1rem}
+.success-modal h2{font-family:'Outfit',sans-serif;font-size:1.5rem;margin-bottom:.5rem}
+.success-modal p{color:var(--dim);margin-bottom:.5rem}
+.success-modal .order-id{font-family:'Outfit',sans-serif;font-size:1.2rem;color:var(--accent);font-weight:700;margin-bottom:1.5rem}
 
-/* ===== GALLERY ===== */
-.gallery-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
-}
-.gallery-card {
-    border-radius: 16px; overflow: hidden; background: var(--bg-card);
-    border: 1px solid var(--border); transition: all 0.4s ease; position: relative; cursor: pointer;
-}
-.gallery-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); border-color: rgba(167,139,250,0.3); }
-.gallery-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.5s; }
-.gallery-card:hover img { transform: scale(1.05); }
-.gallery-card-overlay {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
-    opacity: 0; transition: opacity 0.4s; display: flex; align-items: flex-end; padding: 1.5rem;
-}
-.gallery-card:hover .gallery-card-overlay { opacity: 1; }
-.gallery-card-info { color: #fff; }
-.gallery-card-info h3 { font-family: 'Outfit', sans-serif; font-size: 1.1rem; margin-bottom: 0.25rem; }
-.gallery-card-info p { font-size: 0.85rem; opacity: 0.8; }
-.gallery-card-price {
-    position: absolute; top: 1rem; right: 1rem; padding: 0.4rem 0.9rem; border-radius: 50px;
-    background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); color: var(--gold);
-    font-weight: 700; font-size: 0.85rem;
-}
-.gallery-card-badge {
-    position: absolute; top: 1rem; left: 1rem; padding: 0.3rem 0.8rem; border-radius: 50px;
-    background: var(--gradient); color: #fff; font-weight: 600; font-size: 0.75rem;
-}
+/* FEATURES */
+.feat-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem}
+.feat-card{padding:1.75rem;border-radius:16px;background:var(--bg2);border:1px solid var(--border);transition:all .3s}
+.feat-card:hover{border-color:rgba(167,139,250,0.3);transform:translateY(-4px)}
+.feat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem}
+.feat-card h3{font-family:'Outfit',sans-serif;font-size:1.1rem;margin-bottom:.5rem}
+.feat-card p{color:var(--dim);font-size:.9rem}
+.ic-purple{background:rgba(167,139,250,0.12);color:var(--accent)}
+.ic-blue{background:rgba(56,189,248,0.12);color:var(--accent2)}
+.ic-gold{background:rgba(245,158,11,0.12);color:var(--gold)}
+.ic-green{background:rgba(52,211,153,0.12);color:var(--green)}
+.ic-pink{background:rgba(236,72,153,0.12);color:var(--pink)}
+.ic-red{background:rgba(239,68,68,0.12);color:var(--red)}
 
-/* ===== FEATURES ===== */
-.features-grid {
-    max-width: 1100px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;
-}
-.feature-card {
-    padding: 2rem; border-radius: 16px; background: var(--bg-card);
-    border: 1px solid var(--border); transition: all 0.3s;
-}
-.feature-card:hover { border-color: rgba(167,139,250,0.3); transform: translateY(-4px); }
-.feature-icon {
-    width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; margin-bottom: 1.2rem;
-}
-.feature-icon.purple { background: rgba(167,139,250,0.15); color: var(--accent); }
-.feature-icon.blue { background: rgba(56,189,248,0.15); color: var(--accent2); }
-.feature-icon.gold { background: rgba(245,158,11,0.15); color: var(--gold); }
-.feature-icon.green { background: rgba(52,211,153,0.15); color: #34d399; }
-.feature-icon.pink { background: rgba(236,72,153,0.15); color: #ec4899; }
-.feature-icon.red { background: rgba(239,68,68,0.15); color: #ef4444; }
-.feature-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.2rem; margin-bottom: 0.6rem; }
-.feature-card p { color: var(--text-dim); font-size: 0.95rem; line-height: 1.6; }
+/* FOOTER */
+footer{padding:3rem 2rem 1.5rem;border-top:1px solid var(--border);max-width:1200px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem}
+.footer-brand p{color:var(--dim);font-size:.85rem;max-width:260px;margin-top:.5rem}
+.footer-col h4{font-family:'Outfit',sans-serif;margin-bottom:.75rem;font-size:.9rem}
+.footer-col a{display:block;color:var(--dim);text-decoration:none;font-size:.85rem;margin-bottom:.4rem;transition:color .2s}
+.footer-col a:hover{color:var(--accent)}
+.footer-bottom{text-align:center;padding-top:1.5rem;border-top:1px solid var(--border)}
+.footer-bottom p{color:var(--muted);font-size:.75rem}
 
-/* ===== PRICING ===== */
-#pricing { background: linear-gradient(180deg, var(--bg-dark) 0%, #0a0f1a 100%); }
-.pricing-grid {
-    max-width: 1000px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
-}
-.pricing-card {
-    padding: 2.5rem 2rem; border-radius: 20px; background: var(--bg-card);
-    border: 1px solid var(--border); text-align: center; transition: all 0.3s; position: relative;
-}
-.pricing-card.featured {
-    border-color: rgba(167,139,250,0.4);
-    background: linear-gradient(180deg, rgba(167,139,250,0.06) 0%, var(--bg-card) 40%);
-}
-.pricing-card.featured::before {
-    content: 'แนะนำ'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    padding: 0.3rem 1.2rem; border-radius: 50px; background: var(--gradient);
-    color: #fff; font-weight: 700; font-size: 0.8rem;
-}
-.pricing-card:hover { transform: translateY(-6px); }
-.pricing-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.3rem; margin-bottom: 0.5rem; }
-.pricing-card .price {
-    font-family: 'Outfit', sans-serif; font-size: 2.8rem; font-weight: 800; margin: 1rem 0;
-}
-.pricing-card .price span { font-size: 1rem; font-weight: 400; color: var(--text-dim); }
-.pricing-card .price .currency { font-size: 1.2rem; }
-.pricing-features { list-style: none; margin: 1.5rem 0 2rem; text-align: left; }
-.pricing-features li {
-    padding: 0.5rem 0; color: var(--text-dim); font-size: 0.95rem;
-    display: flex; align-items: center; gap: 0.6rem;
-}
-.pricing-features li i { color: #34d399; font-size: 0.8rem; }
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;padding:.8rem 1.5rem;border-radius:12px;background:var(--green);color:#fff;font-weight:600;font-size:.9rem;z-index:5000;transform:translateY(100px);opacity:0;transition:all .4s;display:flex;align-items:center;gap:.5rem}
+.toast.show{transform:translateY(0);opacity:1}
 
-/* ===== HOW IT WORKS ===== */
-.steps-grid {
-    max-width: 900px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;
-}
-.step-card { text-align: center; position: relative; }
-.step-number {
-    width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 1.2rem;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Outfit', sans-serif; font-size: 1.3rem; font-weight: 800;
-    background: var(--gradient); color: #fff;
-}
-.step-card h3 { font-family: 'Outfit', sans-serif; margin-bottom: 0.5rem; }
-.step-card p { color: var(--text-dim); font-size: 0.9rem; }
-
-/* ===== TESTIMONIALS ===== */
-#testimonials { background: linear-gradient(180deg, #0a0f1a 0%, var(--bg-dark) 100%); }
-.testimonials-grid {
-    max-width: 1100px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;
-}
-.testimonial-card {
-    padding: 2rem; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border);
-}
-.testimonial-stars { color: var(--gold); margin-bottom: 1rem; font-size: 0.9rem; }
-.testimonial-card blockquote {
-    font-size: 0.95rem; color: var(--text-dim); line-height: 1.7; font-style: italic; margin-bottom: 1.5rem;
-}
-.testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
-.testimonial-avatar {
-    width: 42px; height: 42px; border-radius: 50%; background: var(--gradient);
-    display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700;
-}
-.testimonial-author-info h4 { font-size: 0.95rem; }
-.testimonial-author-info p { font-size: 0.8rem; color: var(--text-dim); }
-
-/* ===== CTA ===== */
-.cta-section {
-    padding: 6rem 2rem; text-align: center; position: relative; overflow: hidden;
-}
-.cta-section::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at center, rgba(167,139,250,0.1) 0%, transparent 70%);
-}
-.cta-content { position: relative; max-width: 600px; margin: 0 auto; }
-.cta-content h2 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
-.cta-content p { color: var(--text-dim); margin-bottom: 2rem; font-size: 1.05rem; }
-
-/* ===== FOOTER ===== */
-footer {
-    padding: 3rem 2rem 1.5rem; border-top: 1px solid var(--border);
-    max-width: 1200px; margin: 0 auto;
-}
-.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
-.footer-brand .nav-logo { display: inline-block; margin-bottom: 0.75rem; }
-.footer-brand p { color: var(--text-dim); font-size: 0.9rem; max-width: 280px; }
-.footer-col h4 { font-family: 'Outfit', sans-serif; margin-bottom: 1rem; font-size: 0.95rem; }
-.footer-col a { display: block; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; margin-bottom: 0.5rem; transition: color 0.2s; }
-.footer-col a:hover { color: var(--accent); }
-.footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-.footer-bottom p { color: var(--text-dim); font-size: 0.8rem; }
-
-/* ===== ANIMATIONS ===== */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
-.animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .nav-links { display: none; }
-    .hero h1 { font-size: 2.2rem; }
-    .hero-stats { gap: 1.5rem; }
-    .stat-number { font-size: 1.5rem; }
-    .footer-grid { grid-template-columns: 1fr; }
-    .section-header h2 { font-size: 2rem; }
+@media(max-width:768px){
+    .nav-links{display:none}
+    .hero h1{font-size:2rem}
+    .hero-stats{gap:1.2rem}
+    .stat-num{font-size:1.4rem}
+    .footer-grid{grid-template-columns:1fr}
+    .cat-grid{grid-template-columns:repeat(3,1fr)}
+    .form-row{grid-template-columns:1fr}
+    .cart-panel{width:100%}
 }
     </style>
 </head>
 <body>
 
-<!-- ===== NAVBAR ===== -->
+<!-- NAV -->
 <nav id="navbar">
     <a href="#" class="nav-logo"><i class="fas fa-palette"></i> Art Gallery</a>
     <ul class="nav-links">
-        <li><a href="#gallery">ผลงาน</a></li>
-        <li><a href="#features">ทำไมต้องเรา</a></li>
-        <li><a href="#pricing">ราคา</a></li>
-        <li><a href="#how-it-works">ขั้นตอน</a></li>
+        <li><a href="#categories">หมวดหมู่</a></li>
+        <li><a href="#shop">ผลงาน</a></li>
+        <li><a href="#features">คุณสมบัติ</a></li>
         <li><a href="index.html">เอกสาร SRS</a></li>
+        <li><a href="analysis_design.html">Analysis</a></li>
     </ul>
-    <a href="#cta" class="nav-cta">เริ่มต้นใช้งาน</a>
+    <div class="nav-right">
+        <button class="cart-btn" id="cart-toggle" title="ตะกร้าสินค้า">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge" id="cart-badge">0</span>
+        </button>
+        <a href="#" class="nav-cta" id="login-btn"><i class="fas fa-user"></i> เข้าสู่ระบบ</a>
+    </div>
 </nav>
 
-<!-- ===== HERO ===== -->
+<!-- HERO -->
 <section class="hero">
     <div class="hero-content">
-        <div class="hero-badge"><i class="fas fa-sparkles"></i> แพลตฟอร์มศิลปะออนไลน์อันดับ 1 ของไทย</div>
-        <h1>ค้นพบ <span class="gradient-text">ผลงานศิลปะ</span> ที่จะเปลี่ยนพื้นที่ของคุณ</h1>
+        <div class="hero-badge"><i class="fas fa-star"></i> แพลตฟอร์มศิลปะออนไลน์อันดับ 1 ของไทย</div>
+        <h1>ค้นพบ <span class="gt">ผลงานศิลปะ</span> ที่จะเปลี่ยนพื้นที่ของคุณ</h1>
         <p>เชื่อมต่อศิลปินกับผู้ชื่นชอบศิลปะ ผลงานต้นฉบับคุณภาพสูง พร้อมบริการพิมพ์และใส่กรอบระดับพรีเมียม</p>
-        <div class="hero-buttons">
-            <a href="#gallery" class="btn-primary"><i class="fas fa-eye"></i> ดูผลงานทั้งหมด</a>
-            <a href="#how-it-works" class="btn-outline"><i class="fas fa-play"></i> เริ่มต้นขายผลงาน</a>
+        <div class="hero-btns">
+            <a href="#shop" class="btn-p"><i class="fas fa-shopping-bag"></i> เลือกซื้อผลงาน</a>
+            <a href="#categories" class="btn-o"><i class="fas fa-th-large"></i> ดูหมวดหมู่</a>
         </div>
         <div class="hero-stats">
-            <div class="stat"><div class="stat-number">2,500+</div><div class="stat-label">ผลงานศิลปะ</div></div>
-            <div class="stat"><div class="stat-number">180+</div><div class="stat-label">ศิลปินชั้นนำ</div></div>
-            <div class="stat"><div class="stat-number">15K+</div><div class="stat-label">ลูกค้าทั่วไทย</div></div>
-            <div class="stat"><div class="stat-number">4.9</div><div class="stat-label">คะแนนรีวิว</div></div>
+            <div class="stat"><div class="stat-num">2,500+</div><div class="stat-lbl">ผลงานศิลปะ</div></div>
+            <div class="stat"><div class="stat-num">180+</div><div class="stat-lbl">ศิลปินชั้นนำ</div></div>
+            <div class="stat"><div class="stat-num">15K+</div><div class="stat-lbl">ลูกค้าทั่วไทย</div></div>
+            <div class="stat"><div class="stat-num">4.9</div><div class="stat-lbl">คะแนนรีวิว</div></div>
         </div>
     </div>
 </section>
 
-<!-- ===== GALLERY ===== -->
-<section id="gallery">
-    <div class="section-header">
-        <span class="section-tag">Gallery</span>
-        <h2>ผลงานศิลปะยอดนิยม</h2>
-        <p>คอลเลกชันผลงานคัดสรรจากศิลปินชั้นนำ พร้อมให้คุณเป็นเจ้าของ</p>
+<!-- CATEGORIES -->
+<section id="categories">
+    <div class="sec-head">
+        <span class="sec-tag">Categories</span>
+        <h2>หมวดหมู่ผลงาน</h2>
+        <p>เลือกสำรวจผลงานตามประเภทที่คุณสนใจ</p>
     </div>
-    <div class="gallery-grid">
-        <div class="gallery-card animate-on-scroll">
-            <span class="gallery-card-badge">Best Seller</span>
-            <span class="gallery-card-price">฿1,200</span>
-            <img src="img/art1.png" alt="สุนทรียภาพแห่งขุนเขา">
-            <div class="gallery-card-overlay">
-                <div class="gallery-card-info"><h3>สุนทรียภาพแห่งขุนเขา</h3><p>โดย Chalermchai M. — สีน้ำมัน</p></div>
-            </div>
-        </div>
-        <div class="gallery-card animate-on-scroll">
-            <span class="gallery-card-price">฿1,800</span>
-            <img src="img/art2.png" alt="คลื่นแห่งอารมณ์">
-            <div class="gallery-card-overlay">
-                <div class="gallery-card-info"><h3>คลื่นแห่งอารมณ์</h3><p>โดย Siriporn K. — Abstract</p></div>
-            </div>
-        </div>
-        <div class="gallery-card animate-on-scroll">
-            <span class="gallery-card-badge">New</span>
-            <span class="gallery-card-price">฿950</span>
-            <img src="img/art3.png" alt="วัดไทยในสายหมอก">
-            <div class="gallery-card-overlay">
-                <div class="gallery-card-info"><h3>วัดไทยในสายหมอก</h3><p>โดย Anan P. — สีน้ำ</p></div>
-            </div>
-        </div>
-        <div class="gallery-card animate-on-scroll">
-            <span class="gallery-card-price">฿2,500</span>
-            <img src="img/art4.png" alt="ดอกไม้แห่งกาลเวลา">
-            <div class="gallery-card-overlay">
-                <div class="gallery-card-info"><h3>ดอกไม้แห่งกาลเวลา</h3><p>โดย Ploy R. — Digital Art</p></div>
-            </div>
-        </div>
+    <div class="cat-grid">
+        <div class="cat-card active" data-cat="all"><div class="cat-icon">🎨</div><h3>ทั้งหมด</h3><p>All Artworks</p></div>
+        <div class="cat-card" data-cat="painting"><div class="cat-icon">🖼️</div><h3>ภาพวาด</h3><p>Paintings</p></div>
+        <div class="cat-card" data-cat="digital"><div class="cat-icon">💻</div><h3>ดิจิทัลอาร์ต</h3><p>Digital Art</p></div>
+        <div class="cat-card" data-cat="watercolor"><div class="cat-icon">💧</div><h3>สีน้ำ</h3><p>Watercolor</p></div>
+        <div class="cat-card" data-cat="abstract"><div class="cat-icon">🌀</div><h3>Abstract</h3><p>นามธรรม</p></div>
+        <div class="cat-card" data-cat="thai"><div class="cat-icon">🏛️</div><h3>ศิลปะไทย</h3><p>Thai Art</p></div>
     </div>
 </section>
 
-<!-- ===== FEATURES ===== -->
+<!-- SHOP / GALLERY -->
+<section id="shop">
+    <div class="sec-head">
+        <span class="sec-tag">Shop</span>
+        <h2>เลือกซื้อผลงานศิลปะ</h2>
+        <p>คลิก "เพิ่มลงตะกร้า" เพื่อเริ่มสั่งซื้อ</p>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+        <!-- Populated by JS -->
+    </div>
+</section>
+
+<!-- FEATURES -->
 <section id="features">
-    <div class="section-header">
-        <span class="section-tag">Features</span>
+    <div class="sec-head">
+        <span class="sec-tag">Features</span>
         <h2>ทำไมต้อง Art Gallery?</h2>
         <p>แพลตฟอร์มที่ออกแบบมาเพื่อศิลปินและผู้รักงานศิลปะโดยเฉพาะ</p>
     </div>
-    <div class="features-grid">
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon purple"><i class="fas fa-shield-halved"></i></div>
-            <h3>ปกป้องลิขสิทธิ์</h3>
-            <p>ระบบ Watermark อัตโนมัติบน AWS S3 ปกป้องผลงานต้นฉบับของศิลปินอย่างเข้มงวด</p>
-        </div>
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon blue"><i class="fas fa-print"></i></div>
-            <h3>พิมพ์คุณภาพสูง</h3>
-            <p>เลือกขนาดพิมพ์ A4–A1 พร้อมตัวเลือกกรอบไม้หรืออลูมิเนียม ส่งตรงถึงบ้าน</p>
-        </div>
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon gold"><i class="fas fa-credit-card"></i></div>
-            <h3>ชำระเงินปลอดภัย</h3>
-            <p>รองรับทั้ง Stripe (บัตรเครดิต) และ PromptPay (QR Code) มั่นใจทุกธุรกรรม</p>
-        </div>
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon green"><i class="fas fa-chart-line"></i></div>
-            <h3>แดชบอร์ดศิลปิน</h3>
-            <p>ติดตามยอดขาย สถิติการเข้าชม จัดการ Portfolio ได้อย่างมืออาชีพ</p>
-        </div>
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon pink"><i class="fas fa-heart"></i></div>
-            <h3>Wishlist ส่วนตัว</h3>
-            <p>บันทึกผลงานที่ชื่นชอบ รับแจ้งเตือนเมื่อมีโปรโมชันหรือราคาพิเศษ</p>
-        </div>
-        <div class="feature-card animate-on-scroll">
-            <div class="feature-icon red"><i class="fas fa-mobile-screen"></i></div>
-            <h3>Mobile-First Design</h3>
-            <p>ใช้งานได้สะดวกทุกอุปกรณ์ ไม่ว่าจะเป็นมือถือ แท็บเล็ต หรือคอมพิวเตอร์</p>
-        </div>
+    <div class="feat-grid">
+        <div class="feat-card"><div class="feat-icon ic-purple"><i class="fas fa-shield-halved"></i></div><h3>ปกป้องลิขสิทธิ์</h3><p>ระบบ Watermark อัตโนมัติบน AWS S3 ปกป้องผลงานต้นฉบับศิลปิน</p></div>
+        <div class="feat-card"><div class="feat-icon ic-blue"><i class="fas fa-print"></i></div><h3>พิมพ์คุณภาพสูง</h3><p>เลือกขนาดพิมพ์ A4–A1 พร้อมตัวเลือกกรอบไม้หรืออลูมิเนียม</p></div>
+        <div class="feat-card"><div class="feat-icon ic-gold"><i class="fas fa-credit-card"></i></div><h3>ชำระเงินปลอดภัย</h3><p>รองรับ Stripe (บัตรเครดิต) และ PromptPay (QR Code)</p></div>
+        <div class="feat-card"><div class="feat-icon ic-green"><i class="fas fa-chart-line"></i></div><h3>แดชบอร์ดศิลปิน</h3><p>ติดตามยอดขาย สถิติการเข้าชม จัดการ Portfolio</p></div>
+        <div class="feat-card"><div class="feat-icon ic-pink"><i class="fas fa-heart"></i></div><h3>Wishlist ส่วนตัว</h3><p>บันทึกผลงานที่ชอบ รับแจ้งเตือนเมื่อมีโปรโมชัน</p></div>
+        <div class="feat-card"><div class="feat-icon ic-red"><i class="fas fa-truck-fast"></i></div><h3>จัดส่งทั่วไทย</h3><p>ส่งฟรีทั่วประเทศ แพ็กเกจพรีเมียมกันกระแทก</p></div>
     </div>
 </section>
 
-<!-- ===== PRICING ===== -->
-<section id="pricing">
-    <div class="section-header">
-        <span class="section-tag">Pricing</span>
-        <h2>ราคาที่เข้าถึงได้</h2>
-        <p>เลือกแพ็กเกจที่เหมาะกับความต้องการของคุณ</p>
-    </div>
-    <div class="pricing-grid">
-        <div class="pricing-card animate-on-scroll">
-            <h3>ไฟล์ดิจิทัล</h3>
-            <p style="color:var(--text-dim); font-size:0.9rem;">ดาวน์โหลดไฟล์ต้นฉบับ High-res</p>
-            <div class="price"><span class="currency">฿</span>500 <span>/ ภาพ</span></div>
-            <ul class="pricing-features">
-                <li><i class="fas fa-check"></i> ไฟล์ความละเอียดสูง (300 DPI)</li>
-                <li><i class="fas fa-check"></i> ไม่มีลายน้ำ</li>
-                <li><i class="fas fa-check"></i> ลิขสิทธิ์ใช้งานส่วนบุคคล</li>
-                <li><i class="fas fa-check"></i> ดาวน์โหลดได้ทันที</li>
-            </ul>
-            <a href="#cta" class="btn-outline" style="width:100%;justify-content:center;">เลือกแพ็กเกจ</a>
-        </div>
-        <div class="pricing-card featured animate-on-scroll">
-            <h3>พิมพ์ + กรอบ</h3>
-            <p style="color:var(--text-dim); font-size:0.9rem;">งานพิมพ์คุณภาพพร้อมใส่กรอบ</p>
-            <div class="price"><span class="currency">฿</span>1,500 <span>/ ภาพ</span></div>
-            <ul class="pricing-features">
-                <li><i class="fas fa-check"></i> พิมพ์บนผ้าใบแคนวาส</li>
-                <li><i class="fas fa-check"></i> เลือกขนาด A4 - A1</li>
-                <li><i class="fas fa-check"></i> กรอบไม้หรืออลูมิเนียม</li>
-                <li><i class="fas fa-check"></i> จัดส่งฟรีทั่วประเทศ</li>
-                <li><i class="fas fa-check"></i> รับประกันคุณภาพ 1 ปี</li>
-            </ul>
-            <a href="#cta" class="btn-primary" style="width:100%;justify-content:center;">เลือกแพ็กเกจ</a>
-        </div>
-        <div class="pricing-card animate-on-scroll">
-            <h3>สำหรับศิลปิน</h3>
-            <p style="color:var(--text-dim); font-size:0.9rem;">เริ่มต้นขายผลงานของคุณ</p>
-            <div class="price" style="background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">ฟรี</div>
-            <ul class="pricing-features">
-                <li><i class="fas fa-check"></i> สมัครเป็นศิลปินฟรี</li>
-                <li><i class="fas fa-check"></i> อัปโหลดผลงานไม่จำกัด</li>
-                <li><i class="fas fa-check"></i> แดชบอร์ดวิเคราะห์ยอดขาย</li>
-                <li><i class="fas fa-check"></i> ค่าคอมมิชชัน 15%</li>
-            </ul>
-            <a href="#cta" class="btn-outline" style="width:100%;justify-content:center;">สมัครเป็นศิลปิน</a>
-        </div>
-    </div>
-</section>
-
-<!-- ===== HOW IT WORKS ===== -->
-<section id="how-it-works">
-    <div class="section-header">
-        <span class="section-tag">How it works</span>
-        <h2>ขั้นตอนง่ายๆ</h2>
-        <p>จากการค้นพบจนถึงการเป็นเจ้าของ เพียงไม่กี่คลิก</p>
-    </div>
-    <div class="steps-grid">
-        <div class="step-card animate-on-scroll">
-            <div class="step-number">1</div>
-            <h3>ค้นหาผลงาน</h3>
-            <p>เลือกดูผลงานจากศิลปินมากมายตามสไตล์ที่ชอบ</p>
-        </div>
-        <div class="step-card animate-on-scroll">
-            <div class="step-number">2</div>
-            <h3>เลือกขนาดและกรอบ</h3>
-            <p>ปรับแต่งขนาดพิมพ์และสไตล์กรอบตามต้องการ</p>
-        </div>
-        <div class="step-card animate-on-scroll">
-            <div class="step-number">3</div>
-            <h3>ชำระเงิน</h3>
-            <p>จ่ายด้วยบัตรเครดิตหรือ PromptPay อย่างปลอดภัย</p>
-        </div>
-        <div class="step-card animate-on-scroll">
-            <div class="step-number">4</div>
-            <h3>รับผลงาน</h3>
-            <p>ดาวน์โหลดทันทีหรือรอรับงานพิมพ์พรีเมียมที่บ้าน</p>
-        </div>
-    </div>
-</section>
-
-<!-- ===== TESTIMONIALS ===== -->
-<section id="testimonials">
-    <div class="section-header">
-        <span class="section-tag">Testimonials</span>
-        <h2>เสียงจากลูกค้าของเรา</h2>
-        <p>ความประทับใจจากผู้ใช้งานจริง</p>
-    </div>
-    <div class="testimonials-grid">
-        <div class="testimonial-card animate-on-scroll">
-            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            <blockquote>"พิมพ์ลงบนผ้าใบแคนวาสออกมาได้สวยงามและคมชัดมากครับ คุ้มค่าราคามาก ศิลปินฝีมือดีทุกคน"</blockquote>
-            <div class="testimonial-author">
-                <div class="testimonial-avatar">ส</div>
-                <div class="testimonial-author-info"><h4>สมชาย ใจดี</h4><p>นักสะสมงานศิลปะ</p></div>
-            </div>
-        </div>
-        <div class="testimonial-card animate-on-scroll">
-            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-            <blockquote>"ในฐานะศิลปิน แพลตฟอร์มนี้ใช้งานง่ายมาก ระบบ Watermark อัตโนมัติช่วยปกป้องผลงานได้ดีมาก"</blockquote>
-            <div class="testimonial-author">
-                <div class="testimonial-avatar">พ</div>
-                <div class="testimonial-author-info"><h4>พลอย รุ่งเรือง</h4><p>ศิลปินดิจิทัล</p></div>
-            </div>
-        </div>
-        <div class="testimonial-card animate-on-scroll">
-            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-stroke"></i></div>
-            <blockquote>"สั่งซื้อภาพมาตกแต่งออฟฟิศ คุณภาพงานพิมพ์ดีเยี่ยม จัดส่งรวดเร็ว แพ็กเกจดีไม่เสียหาย"</blockquote>
-            <div class="testimonial-author">
-                <div class="testimonial-avatar">น</div>
-                <div class="testimonial-author-info"><h4>นภา ศรีสุข</h4><p>เจ้าของธุรกิจ Interior</p></div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ===== CTA ===== -->
-<section id="cta" class="cta-section">
-    <div class="cta-content">
-        <h2>พร้อมเริ่มต้นแล้วหรือยัง?</h2>
-        <p>สมัครสมาชิกวันนี้ ไม่ว่าจะเป็นนักสะสมหรือศิลปิน เราพร้อมต้อนรับคุณ</p>
-        <div class="hero-buttons">
-            <a href="#" class="btn-primary"><i class="fas fa-rocket"></i> สมัครสมาชิกฟรี</a>
-            <a href="index.html" class="btn-outline"><i class="fas fa-file-lines"></i> ดูเอกสาร SRS</a>
-        </div>
-    </div>
-</section>
-
-<!-- ===== FOOTER ===== -->
+<!-- FOOTER -->
 <footer>
     <div class="footer-grid">
-        <div class="footer-brand">
-            <a href="#" class="nav-logo"><i class="fas fa-palette"></i> Art Gallery</a>
-            <p>แพลตฟอร์มซื้อขายผลงานศิลปะออนไลน์ เชื่อมต่อศิลปินกับผู้ชื่นชอบศิลปะทั่วประเทศ</p>
-        </div>
-        <div class="footer-col">
-            <h4>แพลตฟอร์ม</h4>
-            <a href="#gallery">ผลงานทั้งหมด</a>
-            <a href="#features">คุณสมบัติ</a>
-            <a href="#pricing">ราคา</a>
-            <a href="#how-it-works">วิธีการใช้งาน</a>
-        </div>
-        <div class="footer-col">
-            <h4>สำหรับศิลปิน</h4>
-            <a href="#">สมัครเป็นศิลปิน</a>
-            <a href="#">อัปโหลดผลงาน</a>
-            <a href="#">แดชบอร์ด</a>
-            <a href="#">ค่าคอมมิชชัน</a>
-        </div>
-        <div class="footer-col">
-            <h4>เอกสาร</h4>
-            <a href="index.html">SRS Document</a>
-            <a href="analysis_design.md">Analysis & Design</a>
-            <a href="https://github.com/Nattapong7557/w1md">GitHub Repo</a>
-        </div>
+        <div class="footer-brand"><a href="#" class="nav-logo"><i class="fas fa-palette"></i> Art Gallery</a><p>แพลตฟอร์มซื้อขายผลงานศิลปะออนไลน์ เชื่อมต่อศิลปินกับผู้ชื่นชอบศิลปะ</p></div>
+        <div class="footer-col"><h4>แพลตฟอร์ม</h4><a href="#categories">หมวดหมู่</a><a href="#shop">ผลงาน</a><a href="#features">คุณสมบัติ</a></div>
+        <div class="footer-col"><h4>สำหรับศิลปิน</h4><a href="#">สมัครเป็นศิลปิน</a><a href="#">อัปโหลดผลงาน</a><a href="#">แดชบอร์ด</a></div>
+        <div class="footer-col"><h4>เอกสาร</h4><a href="index.html">SRS Document</a><a href="analysis_design.html">Analysis & Design</a><a href="https://github.com/Nattapong7557/w1md">GitHub</a></div>
     </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 Art Gallery Platform — CSI204 Workshop #1 | Nattapong7557</p>
-    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Art Gallery Platform — CSI204 Workshop #1 | Nattapong7557</p></div>
 </footer>
 
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay"></div>
+<div class="cart-panel" id="cart-panel">
+    <div class="cart-header">
+        <h2><i class="fas fa-shopping-cart"></i> ตะกร้าสินค้า <span class="count" id="cart-count">0</span></h2>
+        <button class="cart-close" id="cart-close"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="cart-items" id="cart-items">
+        <div class="cart-empty" id="cart-empty">
+            <i class="fas fa-cart-shopping"></i>
+            <p>ตะกร้าว่างเปล่า</p>
+            <p style="font-size:.8rem;margin-top:.5rem">เลือกผลงานที่ชอบแล้วกด "เพิ่มลงตะกร้า"</p>
+        </div>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display:none">
+        <div class="cart-total"><span>ยอดรวม</span><span id="cart-total-price">฿0</span></div>
+        <button class="cart-checkout" id="checkout-btn"><i class="fas fa-lock"></i> ดำเนินการชำระเงิน</button>
+    </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkout-modal">
+    <div class="modal">
+        <div class="modal-head"><h2><i class="fas fa-lock"></i> ชำระเงิน</h2><button class="cart-close" id="modal-close"><i class="fas fa-xmark"></i></button></div>
+        <div class="modal-body" id="checkout-body">
+            <h4 style="margin-bottom:1rem;font-family:'Outfit',sans-serif">เลือกวิธีชำระเงิน</h4>
+            <div class="payment-methods">
+                <div class="pay-method selected" data-method="credit"><i class="fas fa-credit-card pay-credit"></i><span>บัตรเครดิต / เดบิต</span></div>
+                <div class="pay-method" data-method="promptpay"><i class="fas fa-qrcode pay-qr"></i><span>PromptPay QR</span></div>
+            </div>
+            <div id="credit-form">
+                <div class="form-group"><label>ชื่อบนบัตร</label><input type="text" placeholder="SOMCHAI JAIDEE"></div>
+                <div class="form-group"><label>หมายเลขบัตร</label><input type="text" placeholder="4242 4242 4242 4242" maxlength="19"></div>
+                <div class="form-row">
+                    <div class="form-group"><label>วันหมดอายุ</label><input type="text" placeholder="MM/YY"></div>
+                    <div class="form-group"><label>CVV</label><input type="text" placeholder="123" maxlength="3"></div>
+                </div>
+            </div>
+            <div id="promptpay-form" style="display:none;text-align:center;padding:1rem">
+                <i class="fas fa-qrcode" style="font-size:5rem;color:var(--green);margin-bottom:1rem"></i>
+                <p style="font-weight:600;margin-bottom:.5rem">สแกน QR Code เพื่อชำระเงิน</p>
+                <p style="font-size:.85rem;color:var(--dim)">PromptPay ID: 0-8012-34567-8</p>
+            </div>
+            <div class="form-group"><label>ที่อยู่จัดส่ง</label><input type="text" placeholder="123/45 ถนนพหลโยธิน แขวงจตุจักร กรุงเทพฯ 10900"></div>
+            <div class="order-summary" id="order-summary"></div>
+            <button class="btn-pay" id="pay-btn"><i class="fas fa-lock"></i> ยืนยันการชำระเงิน</button>
+        </div>
+    </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal">
+    <div class="modal">
+        <div class="modal-body success-modal" id="success-body">
+            <i class="fas fa-circle-check"></i>
+            <h2>ชำระเงินสำเร็จ!</h2>
+            <p>ขอบคุณสำหรับการสั่งซื้อ</p>
+            <div class="order-id" id="success-order-id">Order #ART-2045</div>
+            <p style="font-size:.85rem;color:var(--dim);margin-bottom:1.5rem">คุณจะได้รับอีเมลยืนยันภายในไม่กี่นาที</p>
+            <button class="btn-p" id="success-close" style="margin:0 auto"><i class="fas fa-home"></i> กลับหน้าหลัก</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg"></span></div>
+
 <script>
-// Navbar scroll effect
-const navbar = document.getElementById('navbar');
+// ===== DATA =====
+const artworks = [
+    {id:1,title:"สุนทรียภาพแห่งขุนเขา",artist:"Chalermchai M.",cat:"painting",price:1200,img:"img/art1.png",badge:"hot"},
+    {id:2,title:"คลื่นแห่งอารมณ์",artist:"Siriporn K.",cat:"abstract",price:1800,img:"img/art2.png",badge:null},
+    {id:3,title:"วัดไทยในสายหมอก",artist:"Anan P.",cat:"watercolor",price:950,img:"img/art3.png",badge:"new"},
+    {id:4,title:"ดอกไม้แห่งกาลเวลา",artist:"Ploy R.",cat:"digital",price:2500,img:"img/art4.png",badge:null},
+    {id:5,title:"แสงสะท้อนแห่งธรรม",artist:"Niti S.",cat:"thai",price:1500,img:"img/art1.png",badge:null},
+    {id:6,title:"มหานครในม่านหมอก",artist:"Vee T.",cat:"digital",price:2200,img:"img/art2.png",badge:"hot"},
+    {id:7,title:"ทะเลใต้แสงจันทร์",artist:"Pim W.",cat:"painting",price:3200,img:"img/art3.png",badge:null},
+    {id:8,title:"กลีบดอกแห่งความหวัง",artist:"Mali K.",cat:"watercolor",price:880,img:"img/art4.png",badge:"new"},
+];
+
+let cart = [];
+let currentCat = 'all';
+
+// ===== RENDER GALLERY =====
+function renderGallery(cat) {
+    const grid = document.getElementById('gallery-grid');
+    const filtered = cat === 'all' ? artworks : artworks.filter(a => a.cat === cat);
+    grid.innerHTML = filtered.map(a => {
+        const inCart = cart.find(c => c.id === a.id);
+        return `
+        <div class="art-card" data-cat="${a.cat}">
+            ${a.badge ? `<span class="art-badge ${a.badge}">${a.badge === 'hot' ? '🔥 Best Seller' : '✨ New'}</span>` : ''}
+            <span class="art-price">฿${a.price.toLocaleString()}</span>
+            <img src="${a.img}" alt="${a.title}" loading="lazy">
+            <div class="art-info">
+                <h3>${a.title}</h3>
+                <div class="art-meta"><i class="fas fa-user-circle"></i> ${a.artist}</div>
+                <div class="art-actions">
+                    <button class="btn-cart ${inCart ? 'added' : ''}" onclick="toggleCart(${a.id})">
+                        <i class="fas fa-${inCart ? 'check' : 'cart-plus'}"></i> ${inCart ? 'อยู่ในตะกร้า' : 'เพิ่มลงตะกร้า'}
+                    </button>
+                    <button class="btn-wish" onclick="this.classList.toggle('liked')"><i class="fas fa-heart"></i></button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ===== CART FUNCTIONS =====
+function toggleCart(id) {
+    const idx = cart.findIndex(c => c.id === id);
+    if (idx > -1) {
+        cart.splice(idx, 1);
+    } else {
+        const art = artworks.find(a => a.id === id);
+        cart.push({...art, qty: 1});
+        showToast(`เพิ่ม "${art.title}" ลงตะกร้าแล้ว`);
+    }
+    updateCart();
+    renderGallery(currentCat);
+}
+
+function updateCart() {
+    const badge = document.getElementById('cart-badge');
+    const count = document.getElementById('cart-count');
+    const items = document.getElementById('cart-items');
+    const empty = document.getElementById('cart-empty');
+    const footer = document.getElementById('cart-footer');
+    const totalEl = document.getElementById('cart-total-price');
+
+    badge.textContent = cart.length;
+    count.textContent = cart.length;
+    badge.classList.toggle('show', cart.length > 0);
+
+    if (cart.length === 0) {
+        empty.style.display = 'block';
+        footer.style.display = 'none';
+        items.innerHTML = '';
+        items.appendChild(empty);
+        return;
+    }
+
+    empty.style.display = 'none';
+    footer.style.display = 'block';
+    const total = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    totalEl.textContent = `฿${total.toLocaleString()}`;
+
+    items.innerHTML = cart.map(c => `
+        <div class="ci">
+            <img src="${c.img}" alt="${c.title}">
+            <div class="ci-info">
+                <h4>${c.title}</h4>
+                <p>${c.artist}</p>
+                <div class="ci-bottom">
+                    <div class="ci-qty">
+                        <button onclick="changeQty(${c.id},-1)">−</button>
+                        <span>${c.qty}</span>
+                        <button onclick="changeQty(${c.id},1)">+</button>
+                    </div>
+                    <span class="ci-price">฿${(c.price * c.qty).toLocaleString()}</span>
+                    <button class="ci-remove" onclick="removeItem(${c.id})" title="ลบ"><i class="fas fa-trash"></i></button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function changeQty(id, delta) {
+    const item = cart.find(c => c.id === id);
+    if (item) {
+        item.qty = Math.max(1, item.qty + delta);
+        updateCart();
+    }
+}
+
+function removeItem(id) {
+    cart = cart.filter(c => c.id !== id);
+    updateCart();
+    renderGallery(currentCat);
+}
+
+// ===== CART PANEL =====
+const cartToggle = document.getElementById('cart-toggle');
+const cartPanel = document.getElementById('cart-panel');
+const cartOverlay = document.getElementById('cart-overlay');
+const cartClose = document.getElementById('cart-close');
+
+function openCart() { cartPanel.classList.add('open'); cartOverlay.classList.add('open'); }
+function closeCart() { cartPanel.classList.remove('open'); cartOverlay.classList.remove('open'); }
+
+cartToggle.addEventListener('click', openCart);
+cartClose.addEventListener('click', closeCart);
+cartOverlay.addEventListener('click', closeCart);
+
+// ===== CHECKOUT =====
+const checkoutBtn = document.getElementById('checkout-btn');
+const checkoutModal = document.getElementById('checkout-modal');
+const modalClose = document.getElementById('modal-close');
+const successModal = document.getElementById('success-modal');
+const successClose = document.getElementById('success-close');
+const payBtn = document.getElementById('pay-btn');
+
+checkoutBtn.addEventListener('click', () => {
+    closeCart();
+    const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    const shipping = 0;
+    document.getElementById('order-summary').innerHTML = `
+        <div class="os-row"><span>สินค้า (${cart.reduce((s,c)=>s+c.qty,0)} รายการ)</span><span>฿${subtotal.toLocaleString()}</span></div>
+        <div class="os-row"><span>ค่าจัดส่ง</span><span style="color:var(--green)">ฟรี</span></div>
+        <div class="os-row total"><span>ยอดรวมทั้งสิ้น</span><span>฿${(subtotal + shipping).toLocaleString()}</span></div>
+    `;
+    checkoutModal.classList.add('open');
+});
+
+modalClose.addEventListener('click', () => checkoutModal.classList.remove('open'));
+
+// Payment method toggle
+document.querySelectorAll('.pay-method').forEach(m => {
+    m.addEventListener('click', () => {
+        document.querySelectorAll('.pay-method').forEach(x => x.classList.remove('selected'));
+        m.classList.add('selected');
+        const method = m.dataset.method;
+        document.getElementById('credit-form').style.display = method === 'credit' ? 'block' : 'none';
+        document.getElementById('promptpay-form').style.display = method === 'promptpay' ? 'block' : 'none';
+    });
+});
+
+payBtn.addEventListener('click', () => {
+    checkoutModal.classList.remove('open');
+    const orderId = 'ART-' + Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('success-order-id').textContent = `Order #${orderId}`;
+    successModal.classList.add('open');
+    cart = [];
+    updateCart();
+    renderGallery(currentCat);
+});
+
+successClose.addEventListener('click', () => {
+    successModal.classList.remove('open');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+});
+
+// ===== CATEGORIES FILTER =====
+document.querySelectorAll('.cat-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        currentCat = card.dataset.cat;
+        renderGallery(currentCat);
+        document.getElementById('shop').scrollIntoView({behavior: 'smooth', block: 'start'});
+    });
+});
+
+// ===== TOAST =====
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ===== NAV SCROLL =====
 window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
 });
 
-// Scroll animation observer
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => entry.target.classList.add('visible'), index * 100);
-            observer.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({behavior:'smooth',block:'start'});
     });
 });
+
+// ===== INIT =====
+renderGallery('all');
+updateCart();
 </script>
 </body>
 </html>
