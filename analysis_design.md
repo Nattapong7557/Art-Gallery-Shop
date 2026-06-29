@@ -286,7 +286,117 @@ sequenceDiagram
 
 ---
 
-## 7. System Architecture Diagram
+## 7. Class Diagram
+
+```mermaid
+classDiagram
+    class User {
+        +int id
+        +string name
+        +string email
+        +string passwordHash
+        +string role
+        +datetime createdAt
+        +register() bool
+        +login() bool
+        +updateProfile() bool
+    }
+
+    class Artist {
+        +int id
+        +int userId
+        +string bio
+        +string portfolioUrl
+        +string bankAccount
+        +uploadArtwork(Artwork artwork) bool
+        +managePortfolio() bool
+        +viewSalesReport() void
+    }
+
+    class Category {
+        +int id
+        +string name
+        +string description
+        +getArtworks() List~Artwork~
+    }
+
+    class Artwork {
+        +int id
+        +int artistId
+        +int categoryId
+        +string title
+        +string description
+        +string highResUrl
+        +string previewUrl
+        +decimal priceDigital
+        +decimal pricePrintBase
+        +string tags
+        +datetime createdAt
+        +updatePrice(decimal digital, decimal printBase) bool
+        +getDetails() Artwork
+        +generateWatermark() void
+    }
+
+    class Order {
+        +int id
+        +int userId
+        +datetime orderDate
+        +string status
+        +decimal totalAmount
+        +string shippingAddress
+        +string trackingNumber
+        +calculateTotal() decimal
+        +updateStatus(string newStatus) bool
+        +cancelOrder() bool
+    }
+
+    class OrderItem {
+        +int id
+        +int orderId
+        +int artworkId
+        +string type
+        +string printSize
+        +string frameOption
+        +int quantity
+        +decimal unitPrice
+        +calculateSubtotal() decimal
+    }
+
+    class Payment {
+        +int id
+        +int orderId
+        +string paymentMethod
+        +string transactionId
+        +decimal amount
+        +string status
+        +datetime paymentDate
+        +processPayment() bool
+        +refund() bool
+    }
+
+    class Wishlist {
+        +int id
+        +int userId
+        +int artworkId
+        +datetime addedAt
+        +add(int userId, int artworkId) bool
+        +remove(int wishlistId) bool
+    }
+
+    User "1" -- "0..1" Artist : acts_as
+    User "1" --> "*" Order : places
+    User "1" --> "*" Wishlist : has
+    Artist "1" --> "*" Artwork : creates
+    Artwork "*" --> "1" Category : belongs_to
+    Order "1" *-- "*" OrderItem : contains
+    OrderItem "*" --> "1" Artwork : references
+    Order "1" -- "1" Payment : has
+    Wishlist "*" --> "1" Artwork : contains
+```
+
+---
+
+## 8. System Architecture Diagram
 
 ดูรายละเอียดไดอะแกรมสถาปัตยกรรมระบบฉบับเต็มได้ที่ไฟล์ [architecture.mmd](architecture.mmd)
 
@@ -341,9 +451,9 @@ graph TD
 
 ---
 
-## 8. Database Schema Detail
+## 9. Database Schema Detail
 
-### 8.1 ตาราง `users`
+### 9.1 ตาราง `users`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสผู้ใช้ |
@@ -353,7 +463,7 @@ graph TD
 | `role` | ENUM('customer','artist','admin') | DEFAULT 'customer' | บทบาทผู้ใช้ |
 | `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | วันที่สร้างบัญชี |
 
-### 8.2 ตาราง `artists`
+### 9.2 ตาราง `artists`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสศิลปิน |
@@ -362,7 +472,7 @@ graph TD
 | `portfolio_url` | VARCHAR(300) | | ลิงก์ Portfolio |
 | `bank_account` | VARCHAR(50) | | เลขบัญชีรับเงิน |
 
-### 8.3 ตาราง `artworks`
+### 9.3 ตาราง `artworks`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสผลงาน |
@@ -377,7 +487,7 @@ graph TD
 | `tags` | VARCHAR(500) | | แท็กคั่นด้วย comma |
 | `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | วันที่อัปโหลด |
 
-### 8.4 ตาราง `orders`
+### 9.4 ตาราง `orders`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสคำสั่งซื้อ |
@@ -388,7 +498,7 @@ graph TD
 | `shipping_address` | TEXT | | ที่อยู่จัดส่ง |
 | `tracking_number` | VARCHAR(100) | | เลขพัสดุ |
 
-### 8.5 ตาราง `order_items`
+### 9.5 ตาราง `order_items`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสรายการ |
@@ -400,7 +510,7 @@ graph TD
 | `quantity` | INT | DEFAULT 1 | จำนวน |
 | `unit_price` | DECIMAL(10,2) | NOT NULL | ราคาต่อหน่วย |
 
-### 8.6 ตาราง `payments`
+### 9.6 ตาราง `payments`
 | Field | Type | Constraint | Description |
 |---|---|---|---|
 | `id` | INT | PK, AUTO_INCREMENT | รหัสการชำระเงิน |
@@ -413,9 +523,9 @@ graph TD
 
 ---
 
-## 9. API Endpoints Summary
+## 10. API Endpoints Summary
 
-### 9.1 Authentication
+### 10.1 Authentication
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/v1/auth/register` | สมัครสมาชิกใหม่ |
@@ -423,7 +533,7 @@ graph TD
 | POST | `/api/v1/auth/google` | เข้าสู่ระบบผ่าน Google OAuth2 |
 | POST | `/api/v1/auth/refresh` | ต่ออายุ Token |
 
-### 9.2 Artworks
+### 10.2 Artworks
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/v1/artworks` | ดึงรายการผลงานทั้งหมด (พร้อม filter/search) |
@@ -432,7 +542,7 @@ graph TD
 | PUT | `/api/v1/artworks/:id` | แก้ไขข้อมูลผลงาน (Artist only) |
 | DELETE | `/api/v1/artworks/:id` | ลบผลงาน (Artist/Admin only) |
 
-### 9.3 Orders & Payments
+### 10.3 Orders & Payments
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/v1/orders` | ดูรายการคำสั่งซื้อของตัวเอง |
@@ -441,7 +551,7 @@ graph TD
 | POST | `/api/v1/payments/checkout` | เริ่มชำระเงิน |
 | POST | `/api/v1/payments/webhook` | รับการแจ้งเตือนจาก Payment Gateway |
 
-### 9.4 Wishlist
+### 10.4 Wishlist
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/v1/wishlist` | ดูรายการโปรด |
@@ -450,7 +560,7 @@ graph TD
 
 ---
 
-## 10. เทคโนโลยีที่ใช้ (Technology Stack)
+## 11. เทคโนโลยีที่ใช้ (Technology Stack)
 
 | Layer | เทคโนโลยี | เหตุผล |
 |---|---|---|
@@ -467,7 +577,7 @@ graph TD
 
 ---
 
-## 11. Software Architecture (สถาปัตยกรรมซอฟต์แวร์)
+## 12. Software Architecture (สถาปัตยกรรมซอฟต์แวร์)
 
 สำหรับธุรกิจ SMEs ที่มีทั้งระบบขายสินค้าออนไลน์ ระบบสมาชิก การชำระเงิน และการเชื่อมต่อคลังสินค้า สามารถวิเคราะห์ **Software Architecture** ตามองค์ประกอบหลัก 3 ชั้น ได้ดังนี้:
 
@@ -542,7 +652,7 @@ graph TD
 
 ---
 
-### 11.1 Frontend Architecture (ส่วนที่ผู้ใช้งานโต้ตอบกับระบบ)
+### 12.1 Frontend Architecture (ส่วนที่ผู้ใช้งานโต้ตอบกับระบบ)
 
 #### หน้าที่หลักของ Frontend
 | หน้าที่ | รายละเอียด |
@@ -627,7 +737,7 @@ graph TD
 
 ---
 
-### 11.2 Backend Architecture (ส่วนประมวลผลหลักของระบบ)
+### 12.2 Backend Architecture (ส่วนประมวลผลหลักของระบบ)
 
 #### หน้าที่หลักของ Backend
 | หน้าที่ | รายละเอียด |
@@ -747,7 +857,7 @@ graph LR
 
 ---
 
-### 11.3 Database Architecture (ระบบจัดเก็บข้อมูล)
+### 12.3 Database Architecture (ระบบจัดเก็บข้อมูล)
 
 #### หน้าที่หลักของ Database
 | หน้าที่ | รายละเอียด |
@@ -895,7 +1005,7 @@ CREATE TABLE orders (
 
 ---
 
-### 11.4 สรุปภาพรวม Software Architecture
+### 12.4 สรุปภาพรวม Software Architecture
 
 ```mermaid
 graph TB
